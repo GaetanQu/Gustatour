@@ -19,9 +19,6 @@ public class Menu {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "price")
-    private float price;
-
     @Column(name = "display_order")
     private Integer display_order;
 
@@ -42,14 +39,6 @@ public class Menu {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public float getPrice() {
-        return this.price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
     }
 
     public Integer getDisplay_order() {
