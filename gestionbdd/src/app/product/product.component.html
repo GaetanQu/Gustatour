@@ -1,0 +1,23 @@
+<mat-card>
+    <img mat-card-image [src]="'http://localhost:80/Gustatour/images/products/' + product.image_name" alt="Pas d'image, penser à en ajouter une">
+    <button mat-button>Modifier l'image pour {{ product.name }}</button>
+    <mat-form-field>
+        <mat-label>Nom du produit:</mat-label>
+        <input matInput type="text" [value]="product.name" [(ngModel)]="product.name">
+    </mat-form-field>
+    <div class="line">
+        <mat-form-field>
+            <mat-label>Catégorie</mat-label>
+            <mat-select [(ngModel)]="this.product.category" [(value)]="this.product.category.name">
+                @for (category of categories; track $index) {
+                    <mat-option [value]="category"> {{ category.name }}</mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="line">
+        <mat-slide-toggle [(ngModel)]="product.available" color="primary" labelPosition="before">Disponible : </mat-slide-toggle>
+        <button mat-icon-button color="warn" (click)="openDialog()"><mat-icon>delete</mat-icon></button>
+    </div>
+    <button mat-flat-button color="primary" [disabled]="!checkUpdates()"><mat-icon matPrefix>save</mat-icon>Enregistrer les modifications</button>
+</mat-card>

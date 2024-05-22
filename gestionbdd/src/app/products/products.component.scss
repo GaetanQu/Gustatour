@@ -1,0 +1,21 @@
+mat-form-field{
+    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+button{
+    position: sticky;
+    top: 4.5em;
+    left: 1em;
+    z-index: 3;
+}
+
+.products{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    row-gap: 1em;
+    column-gap: 1em;
+    margin-inline: 1em;
+}

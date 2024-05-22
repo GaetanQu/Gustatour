@@ -1,0 +1,14 @@
+mat-nav-list{
+    mat-list-item{
+        mat-icon{
+            &.drag{
+                &:hover{
+                    cursor: grab;
+                }
+                &:active{
+                    cursor: grabbing;
+                }
+            }
+        }
+    }
+}

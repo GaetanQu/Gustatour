@@ -1,0 +1,15 @@
+body{
+    height: 100vh;
+
+    mat-sidenav-container{
+        height: calc(100vh - 65px);
+
+        .spinner-container{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    }
+}

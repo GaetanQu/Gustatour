@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Ajouter un produit</h1>
+<mat-dialog-content>
+    <button mat-flat-button>Ajouter une image</button>
+    <mat-form-field>
+        <mat-label>Nom du produit</mat-label>
+        <input matInput type="text">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Catégorie</mat-label>
+        <mat-select>
+            @for (category of categories; track $index) {
+                <mat-option [value]="category.name" >{{ category.name }}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+</mat-dialog-content>

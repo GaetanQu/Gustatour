@@ -1,0 +1,19 @@
+mat-card{
+    min-height: 100%;
+    img{
+        height: 300px;
+    }
+
+    mat-slide-toggle{
+        padding: 1em;
+    }
+
+    .line{
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .line:last-of-type{
+        padding-inline-end: 1em;
+    }
+}
