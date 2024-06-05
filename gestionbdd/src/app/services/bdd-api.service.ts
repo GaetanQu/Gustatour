@@ -16,9 +16,8 @@ export class BddApiService {
     return this.http.get<any[]>(this.apiUrl + query);
   }
 
-  //Envoie une requête à l'API pour mettre à jour une table
-  public postSend(postTitle: string, postElem: any): void{
-    this.http.post(this.apiUrl, Array(postTitle, postElem));
-    console.log(Array(postTitle, postElem));
+  //Envoie une requête à l'API pour mettre à jour une donnée
+  public putSend(query: string, body: any): Observable<void> {
+    return this.http.put<void>(this.apiUrl + query, body);
   }
 }

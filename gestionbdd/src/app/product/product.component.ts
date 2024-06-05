@@ -17,11 +17,13 @@ import { MatIcon } from '@angular/material/icon';
 //Import de services
 import { CategoryService } from '../services/category.service';
 import { MenuService } from '../services/menu.service';
+import { ProductService } from '../services/product.service';
 
 //Import de modèles
 import { Product } from '../models/product.model';
 import { Menu } from '../models/menu.model';
 import { Category } from '../models/category.model';
+import { Ingredient } from '../models/ingredient.model';
 
 @Component({
   selector: 'app-product',
@@ -43,45 +45,60 @@ import { Category } from '../models/category.model';
 
 export class ProductComponent {
   @Input() product!: Product;
-  oldProduct !: Product; 
+  oldProduct !: Product;
 
   menus!: Menu[];
-  currentMenu!: Menu;
 
   categories!: Category[];
-  currentCategory!: Category;
 
-  constructor(private menuService: MenuService, private categoryService: CategoryService, public matDialog: MatDialog){ }
+  constructor(
+    private menuService: MenuService,
+    private categoryService: CategoryService,
+    public matDialog: MatDialog,
+    private productService: ProductService
+  ){ }
 
   ngOnInit(){
     this.categoryService.getAll()
     .subscribe((data:any)=>{
       this.categories = data;
     })
-    this.currentCategory = this.product.category;
 
     this.menuService.getAll()
     .subscribe((data:any)=>{
       this.menus = data;
     })
-    this.currentMenu = this.product.menu;
 
     this.oldProduct = { ...this.product };
+  }
+
+  public compareObjects(c1: any, c2: any): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 
   public checkUpdates(): boolean{
     return (this.product.name != this.oldProduct.name)
     ||(this.product.available != this.oldProduct.available)
-    ||(this.product.category != this.oldProduct.category)
+    ||(this.product.category.id != this.oldProduct.category.id)
     ||(this.product.menu != this.oldProduct.menu)
+    ||(this.product.price != this.oldProduct.price)
   }
 
-  public openDialog() {
+  public openDeleteDialog() {
     const dialogRef = this.matDialog.open(deleteDialog);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+      result ? this.productService.delete(this.product) : console.log(this.product.name + " non supprimé.e");
     });
+  }
+
+  public openRecipeDialog(product:Product) {
+    const dialogRef = this.matDialog.open(recipeDialog);
+  }
+
+  public updateProduct(){
+    this.productService.update(this.product);
+    this.oldProduct = { ...this.product };
   }
 }
 
@@ -90,7 +107,27 @@ export class ProductComponent {
   selector: 'delete-dialog',
   templateUrl: 'delete-dialog.html',
   standalone: true,
-  imports: [MatDialogModule, MatButtonModule],
+  imports: [
+    MatDialogModule,
+    MatButtonModule
+  ],
 })
 export class deleteDialog {
+}
+
+//Component pour la boîte de dialogue de modification d'une recette
+@Component({
+  selector: 'recipe-dialog',
+  templateUrl: 'recipe-dialog.html',
+  standalone: true,
+  imports: [
+    MatCardModule,
+    FormsModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDialogModule,
+  ],
+})
+export class recipeDialog {
+  @Input() product!: Product;
 }

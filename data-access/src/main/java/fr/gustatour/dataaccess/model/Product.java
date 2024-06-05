@@ -45,6 +45,9 @@ public class Product {
 	@Column(name = "diet_id")
 	private Integer diet_id;
 
+	@Column(name = "price")
+	private Float price;
+
 	@ManyToMany(
 		fetch = FetchType.LAZY,
 		cascade = (
@@ -118,6 +121,14 @@ public class Product {
 		this.diet_id = diet_id;
 	}
 
+	public Float getPrice() {
+		return this.price;
+	}
+
+	public void setPrice(Float price) {
+		this.price = price;
+	}
+
 	public List<Ingredient> getIngredients() {
 		return this.ingredients;
 	}
@@ -125,4 +136,5 @@ public class Product {
 	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
+		
 }

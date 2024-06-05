@@ -1,18 +1,9 @@
-<mat-nav-list cdkDropList (cdkDropListDropped)="drop($event)">
-    <div mat-subheader>Catégories de produits :</div>
-    @for (category of categories; track $index) {
-        <mat-list-item cdkDrag cdkDragLockAxis="y">
-            <mat-icon class="drag" matListItemIcon cdkDragHandle>drag_handle</mat-icon>
-            @if(!category.editingTitle){
-                <button mat-icon-button (click)="toggleEditingTitle(category)"><mat-icon>edit</mat-icon></button>
-                {{ category.name }}
-            }
-            @else {
-                <mat-form-field>
-                    <input #input matInput autofocus type="text" [value]="category.name" (blur)="toggleEditingTitle(category)" [id]="'category' + category.id">
-                </mat-form-field>
-            }
-        </mat-list-item>
-    }
-    <button mat-button><mat-icon>add</mat-icon></button>
+<mat-nav-list>
+    <div mat-subheader><h1>Catégories</h1></div>
+    <mat-list-item routerLink="product" (click)="appComponent.toggleSidenav()">
+        Produits
+    </mat-list-item>
+    <mat-list-item routerLink="ingredient" (click)="appComponent.toggleSidenav()">
+        Ingrédients
+    </mat-list-item>
 </mat-nav-list>

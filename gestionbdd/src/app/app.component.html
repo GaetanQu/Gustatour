@@ -4,15 +4,8 @@
         <mat-sidenav mode="over" position="start" [opened]="isExpanded">
             <app-nav></app-nav>
         </mat-sidenav>
-        <mat-sidenav-content>
-            @defer () {
-                <router-outlet></router-outlet>
-            }
-            @loading(minimum 1s) {
-                <div class="spinner-container">
-                    <mat-spinner></mat-spinner>
-                </div>
-            }
+        <mat-sidenav-content (click)="closeSidenav()">
+            <app-content></app-content>
         </mat-sidenav-content>
     </mat-sidenav-container>
 </body>

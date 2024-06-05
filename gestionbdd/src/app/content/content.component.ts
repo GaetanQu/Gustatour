@@ -7,6 +7,7 @@ import { MatIcon } from '@angular/material/icon';
 
 //Imports de components
 import { ProductsComponent } from '../products/products.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-content',
@@ -15,7 +16,8 @@ import { ProductsComponent } from '../products/products.component';
     ProductsComponent,
     MatFormField,
     MatInputModule,
-    MatIcon
+    MatIcon,
+    RouterOutlet
   ],
   templateUrl: './content.component.html',
   styleUrl: './content.component.scss'

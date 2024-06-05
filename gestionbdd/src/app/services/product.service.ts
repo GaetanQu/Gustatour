@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BddApiService } from './bdd-api.service';
 import { Observable } from 'rxjs';
+import { Product } from '../models/product.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,5 +12,15 @@ export class ProductService {
   //Récupère toutes les colonnes de la table products
   public getAll(): Observable<any[]>{
     return this.bddApiService.getCall("product/all");
+  }
+
+  //Met à jour un produit dans la bdd
+  public update(product: Product) {
+    return this.bddApiService.putSend("product/" + String(product.id), product).subscribe();
+  }
+
+  //Supprime un produit de la bdd
+  public delete(product: Product) {
+    return this.bddApiService.putSend("product/delete/" + String(product.id), product).subscribe();
   }
 }

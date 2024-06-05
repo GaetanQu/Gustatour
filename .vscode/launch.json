@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DataAccessApplication<data-access>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "fr.gustatour.dataaccess.DataAccessApplication",
+            "projectName": "data-access",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

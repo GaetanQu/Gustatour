@@ -4,10 +4,6 @@ mat-card{
         height: 300px;
     }
 
-    mat-slide-toggle{
-        padding: 1em;
-    }
-
     .line{
         display: flex;
         justify-content: space-between;
@@ -15,5 +11,9 @@ mat-card{
 
     .line:last-of-type{
         padding-inline-end: 1em;
+    }
+
+    mat-slide-toggle{
+        padding: 1em;
     }
 }

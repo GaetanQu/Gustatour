@@ -1,10 +1,17 @@
 package fr.gustatour.dataaccess.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,11 +29,18 @@ public class Ingredient {
     @Column(name = "available")
     private boolean available;
 
-    @Column(name = "type_id")
-    private Integer type_id;
+    @OneToOne
+    @JoinColumn(name = "type_id")
+    private TypeOfIngredient typeOfIngredient;
 
-    @Column(name = "allergene_id")
-    private Integer allergene_id;
+    @ManyToMany
+    @JoinTable(
+        name = "ingredient_allergene",
+        joinColumns = @JoinColumn(name = "ingredient_id"),
+        inverseJoinColumns = @JoinColumn(name = "allergene_id")
+    )
+    private List<Allergene> allergenes = new ArrayList<>();
+
 
     public int getId() {
         return this.id;
@@ -56,19 +70,20 @@ public class Ingredient {
         this.available = available;
     }
 
-    public Integer getType_id() {
-        return this.type_id;
+    public TypeOfIngredient getTypeOfIngredient() {
+        return this.typeOfIngredient;
     }
 
-    public void setType_id(Integer type_id) {
-        this.type_id = type_id;
+    public void setTypeOfIngredient(TypeOfIngredient typeOfIngredient) {
+        this.typeOfIngredient = typeOfIngredient;
     }
 
-    public Integer getAllergene_id() {
-        return this.allergene_id;
+    public List<Allergene> getAllergenes() {
+        return this.allergenes;
     }
 
-    public void setAllergene_id(Integer allergene_id) {
-        this.allergene_id = allergene_id;
+    public void setAllergenes(List<Allergene> allergenes) {
+        this.allergenes = allergenes;
     }
+    
 }
