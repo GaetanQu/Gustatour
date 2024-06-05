@@ -1,5 +1,19 @@
+mat-form-field{
+    width: 100%;
+    position: sticky;
+    top: 0;
+    height: 70px;
+}
 table{
+    .mat-column-edit{
+        width: 30px;
+    }
+
     .mat-column-name{
+        width: 300px;
+    }
+
+    .mat-column-allergenes{
         width: 300px;
     }
 }

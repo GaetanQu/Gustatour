@@ -9,4 +9,3 @@ Un second qui permettra aux clients de commander en avance leur repas afin de ne
 - npm 10.7.0
 - Angular 17.3.9
 - Angular Material 17.3.9
-- Angular flex-layout

@@ -1,3 +1,4 @@
+import { Allergene } from "./allergene.model";
 import { TypeOfIngredient } from "./type-of-ingredient.model";
 
 export class Ingredient{
@@ -5,4 +6,6 @@ export class Ingredient{
     name!: string;
     typeOfIngredient!: TypeOfIngredient;
     available!: boolean;
+    allergenes!: Allergene[];
+    isEditing: boolean = false;
 }

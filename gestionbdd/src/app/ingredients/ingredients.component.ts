@@ -16,6 +16,13 @@ import { Ingredient } from '../models/ingredient.model';
 //Imports de services
 import { IngredientService } from '../services/ingredient.service';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { TypeOfIngredient } from '../models/type-of-ingredient.model';
+import { AllergenesService } from '../services/allergenes.service';
+import { Allergene } from '../models/allergene.model';
 
 
 @Component({
@@ -27,20 +34,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     FormsModule,
     MatSortModule,
     MatChipsModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatIcon,
+    MatButtonModule,
+    MatInputModule,
+    MatSelectModule,
   ],
   templateUrl: './ingredients.component.html',
   styleUrl: './ingredients.component.scss'
 })
 export class IngredientsComponent {
-  displayedColumns: string[] = ['name', 'type', 'available'];
-  typesOfIngredient!: string[];
+  typesOfIngredient!: TypeOfIngredient[];
+  allergenes!: Allergene[];
+
+  displayedColumns: string[] = ['edit', 'name', 'type', "allergenes", 'available'];
   dataSource : MatTableDataSource<Ingredient> = new MatTableDataSource<Ingredient>();
 
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private ingredientService: IngredientService,
+    private allergeneService: AllergenesService
   ){ }
 
   ngOnInit(){
@@ -50,8 +64,8 @@ export class IngredientsComponent {
       this.dataSource.data = data;
 
       data.forEach(ingredient =>{
-        if(!this.typesOfIngredient.includes(ingredient.typeOfIngredient.name)){
-          this.typesOfIngredient.push(ingredient.typeOfIngredient.name);
+        if (!this.typesOfIngredient.find(typeOfIngredient => typeOfIngredient.name === ingredient.typeOfIngredient.name)) {
+          this.typesOfIngredient.push(ingredient.typeOfIngredient);
         }
       });
 
@@ -60,13 +74,40 @@ export class IngredientsComponent {
       };
 
     });
+
+    this.allergeneService.getAll()
+    .subscribe((data:Allergene[])=>{
+      this.allergenes = data;
+    })
+
   }
 
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
   }
 
-  filterIngredientsByType(query: string): void{
-    this.dataSource.filter = query.trim().toLowerCase();
+  filterIngredientsByType(type: { name: string }): void {
+    this.dataSource.filter = type.name.trim().toLowerCase();
+  }
+
+  clearfilter(){
+    this.dataSource.filter = '';
+  }
+
+  editIngredient(ingredient:Ingredient){
+    ingredient.isEditing = true;
+  }
+
+  saveIngredient(ingredient:Ingredient){
+    this.ingredientService.update(ingredient);
+    ingredient.isEditing = false;
+  }
+
+  selectAllergene(ingredient: Ingredient, allergene: Allergene) {
+    return ingredient.allergenes.some(a => a.id === allergene.id && a.name === allergene.name);
+}
+
+  public compareObjects(c1: any, c2: any): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 }

@@ -1,14 +1,27 @@
+<mat-form-field>
+    <mat-label>Rechercher parmi les ingrédients</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input matInput type="search">
+</mat-form-field>
 <table mat-table [dataSource]="dataSource" matSort>
-    
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Nom</h4></th>
-        <td mat-cell *matCellDef="let ingredient">{{ ingredient.name }}</td>
+        <td mat-cell *matCellDef="let ingredient">
+            @if (!ingredient.isEditing) {
+                {{ ingredient.name }}
+            }
+            @else {
+                <mat-form-field>
+                    <input type="text" matInput [(ngModel)]="ingredient.name">
+                </mat-form-field>
+            }
+        </td>
     </ng-container>
 
     <ng-container matColumnDef="available">
         <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Disponibilité</h4></th>
         <td mat-cell *matCellDef="let ingredient">
-            <mat-slide-toggle [(ngModel)]="ingredient.available"></mat-slide-toggle>
+            <mat-slide-toggle [(ngModel)]="ingredient.available" (change)="saveIngredient(ingredient)"></mat-slide-toggle>
         </td>
     </ng-container>
 
@@ -16,13 +29,63 @@
         <th mat-header-cell *matHeaderCellDef>
             <h4>Type d'ingrédient</h4>
             <mat-chip-listbox>
-                <mat-chip-option selected (click)="filterIngredientsByType('')">Tous</mat-chip-option>
+                <mat-chip-option selected (click)="clearfilter()">Tous</mat-chip-option>
                 @for (typeOfIngredient of typesOfIngredient; track $index) {
-                    <mat-chip-option (click)="filterIngredientsByType(typeOfIngredient)">{{ typeOfIngredient }}</mat-chip-option>
+                    <mat-chip-option (click)="filterIngredientsByType(typeOfIngredient)">{{ typeOfIngredient.name }}</mat-chip-option>
                 }
             </mat-chip-listbox>
         </th>
-        <td mat-cell *matCellDef="let ingredient">{{ ingredient.typeOfIngredient.name }}</td>
+        <td mat-cell *matCellDef="let ingredient">
+            @if (!ingredient.isEditing) {
+                {{ ingredient.typeOfIngredient.name }}
+            }
+            @else {
+                <mat-select [(ngModel)]="ingredient.typeOfIngredient" [compareWith]="compareObjects">
+                    @for (typeOfIngredient of typesOfIngredient; track $index) {
+                        <mat-option [value]="typeOfIngredient">
+                            {{typeOfIngredient.name}}
+                        </mat-option>
+                    }
+                </mat-select>
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let ingredient">
+            @if (!ingredient.isEditing) {
+                <button mat-icon-button (click)="editIngredient(ingredient)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+            }
+            @else {
+                <button mat-icon-button (click)="saveIngredient(ingredient)">
+                    <mat-icon>save</mat-icon>
+                </button>
+            }
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="allergenes">
+        <th mat-header-cell *matHeaderCellDef><h4>Allergènes</h4></th>
+        <td mat-cell *matCellDef="let ingredient">
+            @if(!ingredient.isEditing) {
+                @for (allergene of ingredient.allergenes; track $index) {
+                    <mat-chip>{{ allergene.name }}</mat-chip>
+                }
+            }
+            @else{
+                <mat-form-field>
+                    <mat-label>Allergènes</mat-label>
+                    <mat-select [(ngModel)]="ingredient.allergenes" [compareWith]="compareObjects" multiple>
+                        @for (allergene of allergenes; track $index) {
+                            <mat-option [value]="allergene">{{ allergene.name }}</mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+            }
+        </td>
     </ng-container>
     
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
