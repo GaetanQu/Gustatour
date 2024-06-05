@@ -1,5 +1,24 @@
-<mat-card>
-    <mat-card-title><h3>{{ product.name }}</h3></mat-card-title>
+<mat-card style="width: 500px;">
+    <mat-card-header>
+        <mat-card-title>
+            <h3>{{ product.name }}</h3>
+        </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+        @for (typeOfIngredient of typesOfIngredient; track $index) {
+            <h2>{{ typeOfIngredient.name }}</h2>
+            <mat-select [(ngModel)]="product.ingredients" multiple [compareWith]="compareObjects">
+                @for (ingredient of ingredients; track $index) {
+                    @if (ingredient.typeOfIngredient.id === typeOfIngredient.id){
+                        <mat-option [value]="ingredient">
+                            {{ ingredient.name }}
+                        </mat-option>
+                    }
+                }
+            </mat-select>
+            <mat-divider></mat-divider>
+        }
+    </mat-card-content>
     <mat-card-footer>
         <mat-dialog-actions>
             <button mat-button [mat-dialog-close]="false">Annuler</button>

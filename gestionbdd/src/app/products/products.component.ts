@@ -45,7 +45,6 @@ export class ProductsComponent {
   constructor(
     private productService: ProductService,
     public dialog: MatDialog,
-    private categoryService: CategoryService
   ){ }
 
   ngOnInit(){

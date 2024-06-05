@@ -1,21 +1,34 @@
+<!-- Carte Angular Material -->
 <mat-card>
-    <img mat-card-image [src]="'http://localhost:80/Gustatour/images/products/' + product.image_name" alt="Pas d'image, penser à en ajouter une">
+    <!-- Image de la carte -->
+    <img mat-card-image src="#" alt="Pas d'image, penser à en ajouter une">
+    
+    <!-- Bouton pour modifier l'image du produit -->
     <button mat-button>Modifier l'image pour {{ product.name }}</button>
+    
+    <!-- Ligne pour le nom et le prix du produit -->
     <div class="line">
+        <!-- Champ de formulaire pour le nom du produit -->
         <mat-form-field>
             <mat-label>Nom du produit:</mat-label>
             <input matInput type="text" [value]="product.name" [(ngModel)]="product.name">
         </mat-form-field>
+        
+        <!-- Champ de formulaire pour le prix du produit -->
         <mat-form-field>
             <mat-label>Prix</mat-label>
             <input matInput type="number" [(ngModel)]="product.price" [value]="product.price" step="0.01" min="0">
             <span matTextSuffix>€</span>
         </mat-form-field>
     </div>
+    
+    <!-- Ligne pour la catégorie et le bouton de recette -->
     <div class="line">
+        <!-- Champ de formulaire pour la catégorie du produit -->
         <mat-form-field>
             <mat-label>Catégorie</mat-label>
             <mat-select [(ngModel)]="product.category" [compareWith]="compareObjects">
+                <!-- Boucle pour afficher les options de catégorie -->
                 @for (category of categories; track $index) {
                     <mat-option [value]="category">
                         {{ category.name }}
@@ -23,13 +36,22 @@
                 }
             </mat-select>
         </mat-form-field>
+        
+        <!-- Bouton de recette, affiché uniquement si la catégorie du produit est égale à 1 -->
         @if (product.category.id === 1) {
             <button mat-flat-button color="primary" style="height: 50px; width: 200px;" (click)="openRecipeDialog(product)">Recette</button>
         }
     </div>
+    
+    <!-- Ligne pour la disponibilité du produit et le bouton de suppression -->
     <div class="line">
+        <!-- Interrupteur pour la disponibilité du produit -->
         <mat-slide-toggle [(ngModel)]="product.available" color="accent" labelPosition="before">Disponible : </mat-slide-toggle>
+        
+        <!-- Bouton pour ouvrir le dialogue de suppression -->
         <button mat-icon-button color="warn" (click)="openDeleteDialog()"><mat-icon>delete</mat-icon></button>
     </div>
+    
+    <!-- Bouton pour enregistrer les modifications du produit -->
     <button mat-flat-button color="primary" (click)="updateProduct()" [disabled]="!checkUpdates()"><mat-icon matPrefix>save</mat-icon>Enregistrer les modifications</button>
 </mat-card>

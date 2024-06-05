@@ -1,8 +1,14 @@
+<!-- Liste de navigation -->
 <mat-nav-list>
+    <!-- En-tête de sous-section -->
     <div mat-subheader><h1>Catégories</h1></div>
+    
+    <!-- Élément de liste pour la navigation vers la page des produits -->
     <mat-list-item routerLink="product" (click)="appComponent.toggleSidenav()">
         Produits
     </mat-list-item>
+    
+    <!-- Élément de liste pour la navigation vers la page des ingrédients -->
     <mat-list-item routerLink="ingredient" (click)="appComponent.toggleSidenav()">
         Ingrédients
     </mat-list-item>

@@ -1,5 +1,5 @@
 //Imports pour Angular
-import { Component, Input } from '@angular/core';
+import { Component, Inject, Input } from '@angular/core';
 
 //Imports de components Angular
 import { FormsModule } from '@angular/forms';
@@ -11,19 +11,24 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatListModule } from '@angular/material/list';
 
 //Import de services
 import { CategoryService } from '../services/category.service';
 import { MenuService } from '../services/menu.service';
 import { ProductService } from '../services/product.service';
+import { IngredientService } from '../services/ingredient.service';
 
 //Import de modèles
 import { Product } from '../models/product.model';
 import { Menu } from '../models/menu.model';
 import { Category } from '../models/category.model';
 import { Ingredient } from '../models/ingredient.model';
+import { TypeOfIngredient } from '../models/type-of-ingredient.model';
+import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
   selector: 'app-product',
@@ -82,6 +87,7 @@ export class ProductComponent {
     ||(this.product.category.id != this.oldProduct.category.id)
     ||(this.product.menu != this.oldProduct.menu)
     ||(this.product.price != this.oldProduct.price)
+    ||(this.product.ingredients != this.oldProduct.ingredients)
   }
 
   public openDeleteDialog() {
@@ -93,7 +99,13 @@ export class ProductComponent {
   }
 
   public openRecipeDialog(product:Product) {
-    const dialogRef = this.matDialog.open(recipeDialog);
+    const dialogRef = this.matDialog.open(recipeDialog, {
+      data: { product: product }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      result ? console.log('produit modifié') : this.product.ingredients = {...this.oldProduct.ingredients};
+    });
   }
 
   public updateProduct(){
@@ -109,7 +121,7 @@ export class ProductComponent {
   standalone: true,
   imports: [
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
   ],
 })
 export class deleteDialog {
@@ -126,8 +138,40 @@ export class deleteDialog {
     MatInputModule,
     MatButtonModule,
     MatDialogModule,
+    MatListModule,
+    MatRadioModule,
+    MatDividerModule,
+    MatSelectModule,
+    
   ],
 })
 export class recipeDialog {
+  ingredients!: Ingredient[];
+  typesOfIngredient : TypeOfIngredient[] = [];
+
   @Input() product!: Product;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: any,
+    private ingredientService: IngredientService
+  ) {
+    this.product = data.product;
+  }
+
+  ngOnInit(){
+    this.ingredientService.getAll()
+    .subscribe((data:Ingredient[])=>{
+      this.ingredients = data;
+
+      this.ingredients.forEach(ingredient =>{
+        if(!this.typesOfIngredient.find(typeOfIngredient=> typeOfIngredient.name === ingredient.typeOfIngredient.name)) {
+          this.typesOfIngredient.push(ingredient.typeOfIngredient);
+        }
+      });
+    });
+  }
+
+  public compareObjects(c1: any, c2: any): boolean {
+    return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
 }

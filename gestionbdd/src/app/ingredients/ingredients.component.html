@@ -1,16 +1,21 @@
+<!-- Barre de recherche -->
 <mat-form-field>
     <mat-label>Rechercher parmi les ingrédients</mat-label>
     <mat-icon matPrefix>search</mat-icon>
     <input matInput type="search">
 </mat-form-field>
+
+<!-- Tableau d'ingrédients -->
 <table mat-table [dataSource]="dataSource" matSort>
+
+    <!-- Colonne Nom -->
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Nom</h4></th>
         <td mat-cell *matCellDef="let ingredient">
+            <!-- Condition pour l'édition -->
             @if (!ingredient.isEditing) {
                 {{ ingredient.name }}
-            }
-            @else {
+            } @else {
                 <mat-form-field>
                     <input type="text" matInput [(ngModel)]="ingredient.name">
                 </mat-form-field>
@@ -18,6 +23,7 @@
         </td>
     </ng-container>
 
+    <!-- Colonne Disponibilité -->
     <ng-container matColumnDef="available">
         <th mat-header-cell *matHeaderCellDef mat-sort-header><h4>Disponibilité</h4></th>
         <td mat-cell *matCellDef="let ingredient">
@@ -25,9 +31,11 @@
         </td>
     </ng-container>
 
+    <!-- Colonne Type d'ingrédient -->
     <ng-container matColumnDef="type">
         <th mat-header-cell *matHeaderCellDef>
             <h4>Type d'ingrédient</h4>
+            <!-- Liste déroulante pour filtrer par type -->
             <mat-chip-listbox>
                 <mat-chip-option selected (click)="clearfilter()">Tous</mat-chip-option>
                 @for (typeOfIngredient of typesOfIngredient; track $index) {
@@ -36,10 +44,10 @@
             </mat-chip-listbox>
         </th>
         <td mat-cell *matCellDef="let ingredient">
+            <!-- Condition pour l'édition -->
             @if (!ingredient.isEditing) {
                 {{ ingredient.typeOfIngredient.name }}
-            }
-            @else {
+            } @else {
                 <mat-select [(ngModel)]="ingredient.typeOfIngredient" [compareWith]="compareObjects">
                     @for (typeOfIngredient of typesOfIngredient; track $index) {
                         <mat-option [value]="typeOfIngredient">
@@ -51,15 +59,16 @@
         </td>
     </ng-container>
 
+    <!-- Colonne d'édition -->
     <ng-container matColumnDef="edit">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let ingredient">
+            <!-- Boutons d'édition -->
             @if (!ingredient.isEditing) {
                 <button mat-icon-button (click)="editIngredient(ingredient)">
                     <mat-icon>edit</mat-icon>
                 </button>
-            }
-            @else {
+            } @else {
                 <button mat-icon-button (click)="saveIngredient(ingredient)">
                     <mat-icon>save</mat-icon>
                 </button>
@@ -67,15 +76,17 @@
         </td>
     </ng-container>
 
+    <!-- Colonne Allergènes -->
     <ng-container matColumnDef="allergenes">
         <th mat-header-cell *matHeaderCellDef><h4>Allergènes</h4></th>
         <td mat-cell *matCellDef="let ingredient">
+            <!-- Affichage des allergènes -->
             @if(!ingredient.isEditing) {
                 @for (allergene of ingredient.allergenes; track $index) {
                     <mat-chip>{{ allergene.name }}</mat-chip>
                 }
-            }
-            @else{
+            } @else {
+                <!-- Sélection des allergènes en mode édition -->
                 <mat-form-field>
                     <mat-label>Allergènes</mat-label>
                     <mat-select [(ngModel)]="ingredient.allergenes" [compareWith]="compareObjects" multiple>
@@ -88,6 +99,7 @@
         </td>
     </ng-container>
     
+    <!-- Définition des lignes du tableau -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let myRowData; columns: displayedColumns"></tr>
 </table>
