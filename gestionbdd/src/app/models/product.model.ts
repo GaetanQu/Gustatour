@@ -3,7 +3,7 @@ import { Ingredient } from "./ingredient.model";
 import { Menu } from "./menu.model";
 
 export class Product{
-    id!: number;
+    id?: number;
     name!: string;
     image_name!: string;
     category!: Category;

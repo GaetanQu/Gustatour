@@ -1,4 +1,4 @@
 export class TypeOfIngredient{
-    id !: number;
+    id ?: number;
     name!: string;
 }

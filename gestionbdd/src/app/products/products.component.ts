@@ -22,6 +22,8 @@ import { Category } from '../models/category.model';
 //Imports de components
 import { ProductComponent } from '../product/product.component';
 import { FormsModule } from '@angular/forms';
+import { MenuService } from '../services/menu.service';
+import { Menu } from '../models/menu.model';
 
 @Component({
   selector: 'app-products',
@@ -81,16 +83,25 @@ export class ProductsComponent {
 
 export class AddProductDialog {
   categories!: Category[];
-  newProduct!: Product;
+  menus!: Menu[];
+  newProduct: Product = new Product;
   srcResult!: any;
 
-  constructor(private categoryService: CategoryService){ }
+  constructor(
+    private categoryService: CategoryService,
+    private menuService: MenuService
+  ){
+  }
   
   ngOnInit(){
-    this.newProduct = new Product;
     this.categoryService.getAll()
-    .subscribe((data:any)=>{
-      this.categories = data
+    .subscribe((data:Category[])=>{
+      this.categories = data;
+    })
+
+    this.menuService.getAll()
+    .subscribe((data:Menu[])=>{
+      this.menus = data;
     })
   }
 }

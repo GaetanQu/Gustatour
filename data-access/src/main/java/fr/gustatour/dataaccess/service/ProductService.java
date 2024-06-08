@@ -56,4 +56,8 @@ public class ProductService {
             throw new EntityNotFoundException("Product not found with id " + productId);
         }
     }
+
+    public void deleteProduct(int productId, Product deletedProduct){
+        this.productRepository.deleteById(productId);
+    }
 }

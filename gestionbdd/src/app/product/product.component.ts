@@ -1,8 +1,8 @@
 //Imports pour Angular
-import { Component, Inject, Input } from '@angular/core';
+import { Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
 
 //Imports de components Angular
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 //Import de components Angular Material
 import { MatButtonModule } from '@angular/material/button';
@@ -12,9 +12,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDividerModule } from '@angular/material/divider';
 
 //Import de services
 import { CategoryService } from '../services/category.service';
@@ -28,7 +31,7 @@ import { Menu } from '../models/menu.model';
 import { Category } from '../models/category.model';
 import { Ingredient } from '../models/ingredient.model';
 import { TypeOfIngredient } from '../models/type-of-ingredient.model';
-import { MatDividerModule } from '@angular/material/divider';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-product',
@@ -39,7 +42,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatInputModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatIcon,
+    MatIconModule,
     MatSlideToggleModule,
     FormsModule,
     MatDialogModule
@@ -94,7 +97,9 @@ export class ProductComponent {
     const dialogRef = this.matDialog.open(deleteDialog);
 
     dialogRef.afterClosed().subscribe(result => {
-      result ? this.productService.delete(this.product) : console.log(this.product.name + " non supprimé.e");
+      if(result){
+        this.productService.delete(this.product)
+      }
     });
   }
 
@@ -104,7 +109,9 @@ export class ProductComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      result ? console.log('produit modifié') : this.product.ingredients = {...this.oldProduct.ingredients};
+      if(result){
+        console.log('produit modifié');
+      }
     });
   }
 
@@ -142,12 +149,21 @@ export class deleteDialog {
     MatRadioModule,
     MatDividerModule,
     MatSelectModule,
-    
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatChipsModule,
+    MatIconModule,
   ],
 })
 export class recipeDialog {
   ingredients!: Ingredient[];
-  typesOfIngredient : TypeOfIngredient[] = [];
+  filteredIngredients!: Observable<Ingredient[] | string[]>;
+
+  typesOfIngredient: TypeOfIngredient[] = [];
+  ingredientControl = new FormControl('');
+
+  @ViewChild('ingredientInput') ingredientInput!: ElementRef<HTMLInputElement>;
+
 
   @Input() product!: Product;
 
@@ -173,5 +189,12 @@ export class recipeDialog {
 
   public compareObjects(c1: any, c2: any): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
+  }
+
+  remove(ingredient: Ingredient): void {
+    const index = this.product.ingredients.indexOf(ingredient);
+    if (index >= 0) {
+      this.product.ingredients.splice(index, 1);
+    }
   }
 }

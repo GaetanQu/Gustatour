@@ -1,7 +1,6 @@
 export class Menu{
-    id!: number;
+    id?: number;
     name!: string;
-    price!: number;
     display_order!: number;
     available!: boolean;
 }

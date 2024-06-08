@@ -2,7 +2,7 @@ import { Allergene } from "./allergene.model";
 import { TypeOfIngredient } from "./type-of-ingredient.model";
 
 export class Ingredient{
-    id!: number;
+    id?: number;
     name!: string;
     typeOfIngredient!: TypeOfIngredient;
     available!: boolean;

@@ -1,3 +1,36 @@
 <h1 mat-dialog-title>Ajouter un produit</h1>
 <mat-dialog-content>
+    <button mat-flat-button color="primary"><mat-icon>image</mat-icon>Ajouter une image</button>
+    <input hidden type="file" accept=".png">
+    <div class="line">
+        <mat-form-field [(ngModel)]="newProduct.name" required>
+            <mat-label>Nom du produit</mat-label>
+            <input matInput type="text">
+        </mat-form-field>
+        <mat-form-field [(ngModel)]="newProduct.price" required>
+            <mat-label>Prix</mat-label>
+            <input matInput type="number" step="0.01" min="0">
+        </mat-form-field>
+    </div>
+    <div class="line">
+        <mat-form-field>
+            <mat-label>Catégorie</mat-label>
+            <mat-select [(ngModel)]="newProduct.category" required>
+                @for (category of categories; track $index) {
+                    <mat-option [value]="category">
+                        {{ category.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
+    </div>
 </mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button mat-dialog-close="cancel"><mat-icon>cancel</mat-icon>Annuler</button>
+    @if (newProduct.category && newProduct.category.id === 1) {
+        <button mat-flat-button color="accent" mat-dialog-close="recipe"><mat-icon>arrow_forward</mat-icon>Suivant</button>
+    }
+    @else {
+        <button mat-flat-button color="accent" mat-dialog-close="save"><mat-icon>save</mat-icon>Valider</button>
+    }
+</mat-dialog-actions>
