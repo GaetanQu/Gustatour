@@ -46,9 +46,10 @@ import { Allergene } from '../models/allergene.model';
 export class IngredientsComponent {
   typesOfIngredient!: TypeOfIngredient[];
   allergenes!: Allergene[];
+  searchTerm!: string;
 
   displayedColumns: string[] = ['edit', 'name', 'type', "allergenes", 'available'];
-  dataSource : MatTableDataSource<Ingredient> = new MatTableDataSource<Ingredient>();
+  ingredientSource : MatTableDataSource<Ingredient> = new MatTableDataSource<Ingredient>();
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -61,7 +62,7 @@ export class IngredientsComponent {
     this.typesOfIngredient = [];
     this.ingredientService.getAll()
     .subscribe((data:Ingredient[])=>{
-      this.dataSource.data = data;
+      this.ingredientSource.data = data;
 
       data.forEach(ingredient =>{
         if (!this.typesOfIngredient.find(typeOfIngredient => typeOfIngredient.name === ingredient.typeOfIngredient.name)) {
@@ -69,10 +70,9 @@ export class IngredientsComponent {
         }
       });
 
-      this.dataSource.filterPredicate = (data: Ingredient, filter: string) => {
+      this.ingredientSource.filterPredicate = (data: Ingredient, filter: string) => {
         return data.typeOfIngredient.name.toLowerCase().includes(filter);
       };
-
     });
 
     this.allergeneService.getAll()
@@ -83,15 +83,19 @@ export class IngredientsComponent {
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
+    this.ingredientSource.sort = this.sort;
   }
 
   filterIngredientsByType(type: { name: string }): void {
-    this.dataSource.filter = type.name.trim().toLowerCase();
+    this.ingredientSource.filter = type.name.trim().toLowerCase();
+  }
+
+  filterIngredientsByName(): void{
+    this.ingredientSource.filter = this.searchTerm.toLowerCase();
   }
 
   clearfilter(){
-    this.dataSource.filter = '';
+    this.ingredientSource.filter = '';
   }
 
   editIngredient(ingredient:Ingredient){

@@ -5,23 +5,33 @@
     <div class="line">
         <mat-form-field [(ngModel)]="newProduct.name" required>
             <mat-label>Nom du produit</mat-label>
-            <input matInput type="text">
+            <input matInput type="text" [errorStateMatcher]="errorMatcher" [formControl]="nameFormControl" required>
+            @if (!newProduct.name) {
+                <mat-error>Le produit doit être nommé</mat-error>
+            }
         </mat-form-field>
         <mat-form-field [(ngModel)]="newProduct.price" required>
             <mat-label>Prix</mat-label>
-            <input matInput type="number" step="0.01" min="0">
+            <input matInput type="number" step="0.01" min="0" required [errorStateMatcher]="errorMatcher" [formControl]="priceFormControl">
+            <span matTextSuffix>€</span>
+            @if (!newProduct.price) {
+                <mat-error>Le produit doit avoir un prix !</mat-error>
+            }
         </mat-form-field>
     </div>
     <div class="line">
         <mat-form-field>
             <mat-label>Catégorie</mat-label>
-            <mat-select [(ngModel)]="newProduct.category" required>
+            <mat-select [(ngModel)]="newProduct.category" required [errorStateMatcher]="errorMatcher">
                 @for (category of categories; track $index) {
                     <mat-option [value]="category">
                         {{ category.name }}
                     </mat-option>
                 }
             </mat-select>
+            @if (!newProduct.category) {
+                <mat-error>Le produit doit appartenir à une catégorie</mat-error>
+            }
         </mat-form-field>
     </div>
 </mat-dialog-content>

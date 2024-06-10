@@ -1,12 +1,19 @@
 mat-card{
     min-height: 100%;
+    padding: 1em;
     img{
         height: 300px;
     }
 
     .line{
+        width: 100%;
         display: flex;
         justify-content: space-between;
+        column-gap: 1em;
+
+        mat-form-field{
+            width: 100%;
+        }
     }
 
     .line:last-of-type{
@@ -15,5 +22,11 @@ mat-card{
 
     mat-slide-toggle{
         padding: 1em;
+    }
+
+    #menu{
+        position: absolute;
+        right: 1em;
+        top: 3em;
     }
 }

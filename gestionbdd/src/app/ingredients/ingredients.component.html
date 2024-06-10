@@ -2,11 +2,11 @@
 <mat-form-field>
     <mat-label>Rechercher parmi les ingrédients</mat-label>
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput type="search">
+    <input matInput type="search" [(ngModel)]="searchTerm" (input)="filterIngredientsByName()">
 </mat-form-field>
 
 <!-- Tableau d'ingrédients -->
-<table mat-table [dataSource]="dataSource" matSort>
+<table mat-table [dataSource]="ingredientSource" matSort>
 
     <!-- Colonne Nom -->
     <ng-container matColumnDef="name">
@@ -17,6 +17,7 @@
                 {{ ingredient.name }}
             } @else {
                 <mat-form-field>
+                    <mat-label>Nom du produit</mat-label>
                     <input type="text" matInput [(ngModel)]="ingredient.name">
                 </mat-form-field>
             }
@@ -48,13 +49,16 @@
             @if (!ingredient.isEditing) {
                 {{ ingredient.typeOfIngredient.name }}
             } @else {
-                <mat-select [(ngModel)]="ingredient.typeOfIngredient" [compareWith]="compareObjects">
-                    @for (typeOfIngredient of typesOfIngredient; track $index) {
-                        <mat-option [value]="typeOfIngredient">
-                            {{typeOfIngredient.name}}
-                        </mat-option>
-                    }
-                </mat-select>
+                <mat-form-field>
+                    <mat-label>Catégorie</mat-label>
+                    <mat-select [(ngModel)]="ingredient.typeOfIngredient" [compareWith]="compareObjects">
+                        @for (typeOfIngredient of typesOfIngredient; track $index) {
+                            <mat-option [value]="typeOfIngredient">
+                                {{typeOfIngredient.name}}
+                            </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
             }
         </td>
     </ng-container>

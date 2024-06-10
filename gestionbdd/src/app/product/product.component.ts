@@ -3,6 +3,7 @@ import { Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
 
 //Imports de components Angular
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 //Import de components Angular Material
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +19,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 //Import de services
 import { CategoryService } from '../services/category.service';
@@ -31,7 +33,6 @@ import { Menu } from '../models/menu.model';
 import { Category } from '../models/category.model';
 import { Ingredient } from '../models/ingredient.model';
 import { TypeOfIngredient } from '../models/type-of-ingredient.model';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-product',
@@ -138,6 +139,7 @@ export class deleteDialog {
 @Component({
   selector: 'recipe-dialog',
   templateUrl: 'recipe-dialog.html',
+  styleUrl: './product.component.scss',
   standalone: true,
   imports: [
     MatCardModule,
@@ -153,9 +155,11 @@ export class deleteDialog {
     ReactiveFormsModule,
     MatChipsModule,
     MatIconModule,
+    MatCheckboxModule
   ],
 })
 export class recipeDialog {
+  menus!: Menu[];
   ingredients!: Ingredient[];
   filteredIngredients!: Observable<Ingredient[] | string[]>;
 
@@ -169,7 +173,8 @@ export class recipeDialog {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private ingredientService: IngredientService
+    private ingredientService: IngredientService,
+    private menuService: MenuService
   ) {
     this.product = data.product;
   }
@@ -180,10 +185,15 @@ export class recipeDialog {
       this.ingredients = data;
 
       this.ingredients.forEach(ingredient =>{
-        if(!this.typesOfIngredient.find(typeOfIngredient=> typeOfIngredient.name === ingredient.typeOfIngredient.name)) {
+        if(!this.typesOfIngredient.find(typeOfIngredient=> typeOfIngredient.id === ingredient.typeOfIngredient.id)) {
           this.typesOfIngredient.push(ingredient.typeOfIngredient);
         }
       });
+    });
+
+    this.menuService.getAll()
+    .subscribe((data: Menu[])=>{
+      this.menus = data;
     });
   }
 
@@ -196,5 +206,22 @@ export class recipeDialog {
     if (index >= 0) {
       this.product.ingredients.splice(index, 1);
     }
+  }
+
+  public checkIngredients (ingredient: Ingredient): boolean {
+    if(this.product.ingredients.find(productIngredient=> productIngredient.id === ingredient.id)) {
+      return true;
+    };
+    return false;
+  }
+
+  public toggleIngredientToProduct(ingredient: Ingredient): void {
+    if (!this.checkIngredients(ingredient)) {
+      this.product.ingredients.push(ingredient);
+    }
+    else {
+      this.product.ingredients.splice(this.product.ingredients.indexOf(ingredient), 1);
+    }
+    console.log(this.product.ingredients);
   }
 }

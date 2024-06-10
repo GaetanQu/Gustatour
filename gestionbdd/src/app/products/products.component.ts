@@ -21,9 +21,10 @@ import { Category } from '../models/category.model';
 
 //Imports de components
 import { ProductComponent } from '../product/product.component';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MenuService } from '../services/menu.service';
 import { Menu } from '../models/menu.model';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 @Component({
   selector: 'app-products',
@@ -36,13 +37,16 @@ import { Menu } from '../models/menu.model';
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
+    FormsModule,
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent {
+  allProducts!: Product[];
   products!: Product[];
   categories!: Category[];
+  searchTerm!: string;
 
   constructor(
     private productService: ProductService,
@@ -52,6 +56,7 @@ export class ProductsComponent {
   ngOnInit(){
     this.productService.getAll()
     .subscribe((data:any)=>{
+      this.allProducts = data;
       this.products = data;
     })
   }
@@ -61,6 +66,18 @@ export class ProductsComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log(`Dialog result: ${result}`);
     });
+  }
+
+  public filterProductsByName() {
+    this.products = this.allProducts.filter(product => 
+      product.name.toLowerCase().includes(this.searchTerm));
+  }
+}
+
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
   }
 }
 
@@ -75,9 +92,11 @@ export class ProductsComponent {
     MatListModule,
     MatIconModule,
     FormsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
-  templateUrl: ('add-product.component.html'),
+  templateUrl: ('add-product-dialog.html'),
   styleUrl: './products.component.scss'
 })
 
@@ -86,6 +105,9 @@ export class AddProductDialog {
   menus!: Menu[];
   newProduct: Product = new Product;
   srcResult!: any;
+  errorMatcher = new MyErrorStateMatcher();
+  nameFormControl = new FormControl('', [Validators.required]);
+  priceFormControl = new FormControl('', [Validators.required]);
 
   constructor(
     private categoryService: CategoryService,

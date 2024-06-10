@@ -5,26 +5,31 @@
         </mat-card-title>
     </mat-card-header>
     <mat-card-content>
+        <mat-form-field id="menu">
+            <mat-label>Menu</mat-label>
+            <mat-select [(ngModel)]="product.menu" [compareWith]="compareObjects">
+                @for (menu of menus; track $index) {
+                    <mat-option [value]="menu">
+                        {{ menu.name }}
+                    </mat-option>
+                }
+            </mat-select>
+        </mat-form-field>
         @for (typeOfIngredient of typesOfIngredient; track $index) {
-            <h2>{{ typeOfIngredient.name }}</h2>
-            <mat-form-field>
-                <mat-select multiple>
-                    @for (ingredient of ingredients; track $index) {
-                        @if (ingredient.typeOfIngredient.id === typeOfIngredient.id) {
-                            <mat-option [value]="ingredient">
-                                {{ ingredient.name }}
-                            </mat-option>
-                        }
-                    }
-                </mat-select>
-            </mat-form-field>
-            <mat-divider></mat-divider>
+            <h3>{{ typeOfIngredient.name }}</h3>
+            @for (ingredient of ingredients; track $index) {
+                @defer (when ingredient.typeOfIngredient.id === typeOfIngredient.id) {
+                    <mat-checkbox color="primary" [checked]="checkIngredients(ingredient)" (change)="toggleIngredientToProduct(ingredient)">
+                        {{ ingredient.name }}
+                    </mat-checkbox>
+                }
+            }
         }
     </mat-card-content>
     <mat-card-footer>
         <mat-dialog-actions>
-            <button mat-button [mat-dialog-close]="false">Annuler</button>
-            <button mat-flat-button color="accent" [mat-dialog-close]="true">Enregistrer</button>
+            <button mat-button [mat-dialog-close]="false"><mat-icon>cancel</mat-icon>Annuler</button>
+            <button mat-flat-button color="accent" [mat-dialog-close]="true"><mat-icon>save</mat-icon>Enregistrer</button>
         </mat-dialog-actions>
     </mat-card-footer>
 </mat-card>

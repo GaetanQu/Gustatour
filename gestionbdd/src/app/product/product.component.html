@@ -37,7 +37,7 @@
             </mat-select>
         </mat-form-field>
         
-        <!-- Bouton de recette, affiché uniquement si la catégorie du produit est égale à 1 -->
+        <!-- Bouton de recette, affiché uniquement si la catégorie du produit est Plats -->
         @if (product.category.id === 1) {
             <button mat-flat-button color="primary" style="height: 50px; width: 200px;" (click)="openRecipeDialog(product)">Recette</button>
         }

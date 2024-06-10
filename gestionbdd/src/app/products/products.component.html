@@ -1,5 +1,5 @@
 <mat-form-field id="searchbar">
-    <input matInput type="search" placeholder="Rechercher">
+    <input matInput type="search" placeholder="Rechercher" (input)="filterProductsByName()" [(ngModel)]="searchTerm">
     <mat-icon matPrefix>search</mat-icon>
 </mat-form-field>
 <button id="addProduct" mat-flat-button color="primary" (click)="openDialog()"><mat-icon>add</mat-icon>Ajouter un produit</button>
