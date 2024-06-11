@@ -23,10 +23,21 @@ mat-card{
     mat-slide-toggle{
         padding: 1em;
     }
+}
+
+#recipe-dialog{
+    width: 70vw;
+    max-height: 90vh;
 
     #menu{
         position: absolute;
-        right: 1em;
+        right: 3em;
         top: 3em;
+    }
+
+    .ingredients{
+        display: grid;
+        column-gap: 1em;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1em));
     }
 }

@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatStepperModule } from '@angular/material/stepper';
 
 //Imports de services
 import { ProductService } from '../services/product.service';
@@ -21,10 +21,13 @@ import { Category } from '../models/category.model';
 
 //Imports de components
 import { ProductComponent } from '../product/product.component';
-import { FormControl, FormGroupDirective, FormsModule, NgForm, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MenuService } from '../services/menu.service';
 import { Menu } from '../models/menu.model';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { Ingredient } from '../models/ingredient.model';
+import { TypeOfIngredient } from '../models/type-of-ingredient.model';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { IngredientService } from '../services/ingredient.service';
 
 @Component({
   selector: 'app-products',
@@ -55,29 +58,43 @@ export class ProductsComponent {
 
   ngOnInit(){
     this.productService.getAll()
-    .subscribe((data:any)=>{
+    .subscribe((data:Product[])=>{
       this.allProducts = data;
-      this.products = data;
-    })
+      this.products = [...data] ;
+    });
   }
 
-  public openDialog(): void {
+  public openAddProductDialog(): void {
     const dialogRef = this.dialog.open(AddProductDialog);
     dialogRef.afterClosed().subscribe(result => {
-      console.log(`Dialog result: ${result}`);
+      console.log(result);
+      if(result[0] && result[0] === "save") {
+        result[1].available = true;
+        this.productService.add(result[1])
+        .subscribe(() =>{
+          this.allProducts.push(result[1]);
+          this.productService.getAll()
+          .subscribe((data: Product[]) =>{
+            this.products = [...data]
+            this.allProducts = [...data]
+            this.filterProductsByName();
+          });
+        });
+      }
     });
   }
 
   public filterProductsByName() {
-    this.products = this.allProducts.filter(product => 
-      product.name.toLowerCase().includes(this.searchTerm));
-  }
-}
-
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+    if(this.searchTerm) {
+      this.products = this.allProducts.filter(product => 
+        product.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(this.searchTerm.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
+      );
+    }
+    else {
+      this.products = this.allProducts.filter(product => 
+        product.name.toLowerCase().includes("")
+      );
+    }
   }
 }
 
@@ -89,12 +106,11 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
-    MatListModule,
     MatIconModule,
     FormsModule,
-    MatAutocompleteModule,
-    FormsModule,
     ReactiveFormsModule,
+    MatStepperModule,
+    MatCheckboxModule,
   ],
   templateUrl: ('add-product-dialog.html'),
   styleUrl: './products.component.scss'
@@ -103,27 +119,53 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 export class AddProductDialog {
   categories!: Category[];
   menus!: Menu[];
+  ingredients!: Ingredient[];
+  typesOfIngredient: TypeOfIngredient[] = [];
   newProduct: Product = new Product;
-  srcResult!: any;
-  errorMatcher = new MyErrorStateMatcher();
-  nameFormControl = new FormControl('', [Validators.required]);
-  priceFormControl = new FormControl('', [Validators.required]);
 
   constructor(
     private categoryService: CategoryService,
-    private menuService: MenuService
+    private menuService: MenuService,
+    private ingredientService: IngredientService,
   ){
   }
   
   ngOnInit(){
+    this.newProduct.ingredients = []
+
     this.categoryService.getAll()
     .subscribe((data:Category[])=>{
-      this.categories = data;
-    })
+      this.categories = [...data];
+    });
 
     this.menuService.getAll()
     .subscribe((data:Menu[])=>{
-      this.menus = data;
-    })
+      this.menus = [...data];
+    });
+
+    this.ingredientService.getAll()
+    .subscribe((data: Ingredient[])=>{
+      this.ingredients = [...data];
+
+      this.ingredients.forEach(ingredient => {
+        if(!this.typesOfIngredient.find(typeOfIngredient => typeOfIngredient.id === ingredient.typeOfIngredient.id)) {
+          this.typesOfIngredient.push(ingredient.typeOfIngredient);
+        }
+      })
+    });
+  }
+
+  // Vérification de la présence d'un ingrédient dans le produit
+  public checkIngredients(ingredient: Ingredient): boolean {
+    return !!this.newProduct.ingredients.find(productIngredient => productIngredient.id === ingredient.id);
+  }
+
+  // Ajouter ou retirer un ingrédient de la liste des ingrédients du produit
+  public toggleIngredientToProduct(ingredient: Ingredient): void {
+    if (!this.checkIngredients(ingredient)) {
+      this.newProduct.ingredients.push(ingredient);
+    } else {
+      this.newProduct.ingredients.splice(this.newProduct.ingredients.indexOf(ingredient), 1);
+    }
   }
 }

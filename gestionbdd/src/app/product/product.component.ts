@@ -1,11 +1,11 @@
-//Imports pour Angular
+// Imports pour Angular
 import { Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
 
-//Imports de components Angular
+// Imports de composants Angular
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 
-//Import de components Angular Material
+// Imports de composants Angular Material
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -21,13 +21,13 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
-//Import de services
+// Imports de services
 import { CategoryService } from '../services/category.service';
 import { MenuService } from '../services/menu.service';
 import { ProductService } from '../services/product.service';
 import { IngredientService } from '../services/ingredient.service';
 
-//Import de modèles
+// Imports de modèles
 import { Product } from '../models/product.model';
 import { Menu } from '../models/menu.model';
 import { Category } from '../models/category.model';
@@ -46,18 +46,17 @@ import { TypeOfIngredient } from '../models/type-of-ingredient.model';
     MatIconModule,
     MatSlideToggleModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    ProductComponent
   ],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
 })
-
 export class ProductComponent {
   @Input() product!: Product;
+  @Input() allProducts!: Product[];
   oldProduct !: Product;
-
   menus!: Menu[];
-
   categories!: Category[];
 
   constructor(
@@ -65,8 +64,9 @@ export class ProductComponent {
     private categoryService: CategoryService,
     public matDialog: MatDialog,
     private productService: ProductService
-  ){ }
+  ){}
 
+  // Initialisation des données lors du chargement du composant
   ngOnInit(){
     this.categoryService.getAll()
     .subscribe((data:any)=>{
@@ -78,51 +78,75 @@ export class ProductComponent {
       this.menus = data;
     })
 
-    this.oldProduct = { ...this.product };
+    this.oldProduct = JSON.parse(JSON.stringify(this.product));
   }
 
+  // Comparaison des objets par ID
   public compareObjects(c1: any, c2: any): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 
-  public checkUpdates(): boolean{
+  // Vérification des mises à jour sur le produit
+  public checkUpdates(): boolean {
     return (this.product.name != this.oldProduct.name)
-    ||(this.product.available != this.oldProduct.available)
-    ||(this.product.category.id != this.oldProduct.category.id)
-    ||(this.product.menu != this.oldProduct.menu)
-    ||(this.product.price != this.oldProduct.price)
-    ||(this.product.ingredients != this.oldProduct.ingredients)
+    || (this.product.available != this.oldProduct.available)
+    || (!this.compareObjects(this.product.category, this.oldProduct.category))
+    || (this.product.menu && this.oldProduct.menu && this.product.menu.id != this.oldProduct.menu.id)
+    || (this.product.price != this.oldProduct.price)
+    || (!this.ingredientComparison(this.product.ingredients, this.oldProduct.ingredients));
   }
 
+  private ingredientComparison(a: Ingredient[], b: Ingredient[]): boolean {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length !== b.length) return false;
+  
+    // Vérifier que chaque ingrédient de `a` est présent dans `b`
+    for (let i = 0; i < a.length; ++i) {
+      if (!b.some(ingredient => ingredient.id === a[i].id)) return false;
+    }
+    
+    // Vérifier que chaque ingrédient de `b` est présent dans `a`
+    for (let i = 0; i < b.length; ++i) {
+      if (!a.some(ingredient => ingredient.id === b[i].id)) return false;
+    }
+  
+    return true;
+  }
+
+  // Ouvrir le dialogue de suppression
   public openDeleteDialog() {
     const dialogRef = this.matDialog.open(deleteDialog);
 
     dialogRef.afterClosed().subscribe(result => {
       if(result){
         this.productService.delete(this.product)
+        .subscribe();
       }
     });
   }
 
-  public openRecipeDialog(product:Product) {
+  // Ouvrir le dialogue de recette
+  public openRecipeDialog(product: Product) {
     const dialogRef = this.matDialog.open(recipeDialog, {
       data: { product: product }
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        console.log('produit modifié');
+      if (!result) {
+        this.product = JSON.parse(JSON.stringify(this.oldProduct));
       }
     });
   }
 
+  // Mettre à jour le produit
   public updateProduct(){
     this.productService.update(this.product);
-    this.oldProduct = { ...this.product };
+    this.oldProduct = JSON.parse(JSON.stringify(this.product));
   }
 }
 
-//Component pour la boîte de dialogue lors d'une supression de produit
+// Composant pour la boîte de dialogue lors d'une suppression de produit
 @Component({
   selector: 'delete-dialog',
   templateUrl: 'delete-dialog.html',
@@ -135,7 +159,7 @@ export class ProductComponent {
 export class deleteDialog {
 }
 
-//Component pour la boîte de dialogue de modification d'une recette
+// Composant pour la boîte de dialogue de modification d'une recette
 @Component({
   selector: 'recipe-dialog',
   templateUrl: 'recipe-dialog.html',
@@ -162,14 +186,10 @@ export class recipeDialog {
   menus!: Menu[];
   ingredients!: Ingredient[];
   filteredIngredients!: Observable<Ingredient[] | string[]>;
-
   typesOfIngredient: TypeOfIngredient[] = [];
   ingredientControl = new FormControl('');
-
   @ViewChild('ingredientInput') ingredientInput!: ElementRef<HTMLInputElement>;
-
-
-  @Input() product!: Product;
+  product!: Product;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -179,28 +199,31 @@ export class recipeDialog {
     this.product = data.product;
   }
 
+  // Initialisation des données lors du chargement du composant
   ngOnInit(){
     this.ingredientService.getAll()
-    .subscribe((data:Ingredient[])=>{
+    .subscribe((data: Ingredient[]) => {
       this.ingredients = data;
 
-      this.ingredients.forEach(ingredient =>{
-        if(!this.typesOfIngredient.find(typeOfIngredient=> typeOfIngredient.id === ingredient.typeOfIngredient.id)) {
+      this.ingredients.forEach(ingredient => {
+        if(!this.typesOfIngredient.find(typeOfIngredient => typeOfIngredient.id === ingredient.typeOfIngredient.id)) {
           this.typesOfIngredient.push(ingredient.typeOfIngredient);
         }
       });
     });
 
     this.menuService.getAll()
-    .subscribe((data: Menu[])=>{
+    .subscribe((data: Menu[]) => {
       this.menus = data;
     });
   }
 
+  // Comparaison des objets par ID
   public compareObjects(c1: any, c2: any): boolean {
     return c1 && c2 ? c1.id === c2.id : c1 === c2;
   }
 
+  // Supprimer un ingrédient de la liste des ingrédients du produit
   remove(ingredient: Ingredient): void {
     const index = this.product.ingredients.indexOf(ingredient);
     if (index >= 0) {
@@ -208,20 +231,17 @@ export class recipeDialog {
     }
   }
 
-  public checkIngredients (ingredient: Ingredient): boolean {
-    if(this.product.ingredients.find(productIngredient=> productIngredient.id === ingredient.id)) {
-      return true;
-    };
-    return false;
+  // Vérification de la présence d'un ingrédient dans le produit
+  public checkIngredients(ingredient: Ingredient): boolean {
+    return !!this.product.ingredients.find(productIngredient => productIngredient.id === ingredient.id);
   }
 
+  // Ajouter ou retirer un ingrédient de la liste des ingrédients du produit
   public toggleIngredientToProduct(ingredient: Ingredient): void {
     if (!this.checkIngredients(ingredient)) {
       this.product.ingredients.push(ingredient);
-    }
-    else {
+    } else {
       this.product.ingredients.splice(this.product.ingredients.indexOf(ingredient), 1);
     }
-    console.log(this.product.ingredients);
   }
 }

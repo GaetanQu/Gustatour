@@ -19,6 +19,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public Product saveProduct(Product product) {
+        return productRepository.save(product);
+    }
+
     public void updateProduct(int productId, Product updatedProduct) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
 

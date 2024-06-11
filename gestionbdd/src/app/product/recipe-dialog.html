@@ -1,4 +1,4 @@
-<mat-card style="width: 500px;">
+<main id="recipe-dialog">
     <mat-card-header>
         <mat-card-title>
             <h3>{{ product.name }}</h3>
@@ -17,13 +17,15 @@
         </mat-form-field>
         @for (typeOfIngredient of typesOfIngredient; track $index) {
             <h3>{{ typeOfIngredient.name }}</h3>
-            @for (ingredient of ingredients; track $index) {
-                @defer (when ingredient.typeOfIngredient.id === typeOfIngredient.id) {
-                    <mat-checkbox color="primary" [checked]="checkIngredients(ingredient)" (change)="toggleIngredientToProduct(ingredient)">
-                        {{ ingredient.name }}
-                    </mat-checkbox>
+            <div class="ingredients">
+                @for (ingredient of ingredients; track $index) {
+                    @defer (when ingredient.typeOfIngredient.id === typeOfIngredient.id) {
+                        <mat-checkbox color="primary" [checked]="checkIngredients(ingredient)" (change)="toggleIngredientToProduct(ingredient)">
+                            {{ ingredient.name }}
+                        </mat-checkbox>
+                    }
                 }
-            }
+            </div>
         }
     </mat-card-content>
     <mat-card-footer>
@@ -32,4 +34,4 @@
             <button mat-flat-button color="accent" [mat-dialog-close]="true"><mat-icon>save</mat-icon>Enregistrer</button>
         </mat-dialog-actions>
     </mat-card-footer>
-</mat-card>
+</main>

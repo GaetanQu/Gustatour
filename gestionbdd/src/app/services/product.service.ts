@@ -14,6 +14,11 @@ export class ProductService {
     return this.bddApiService.getCall("product/all");
   }
 
+  //Ajoute un produit à la bdd
+  public add(product: Product): Observable<void> {
+    return this.bddApiService.postSend("product/add", product);
+  }
+
   //Met à jour un produit dans la bdd
   public update(product: Product) {
     return this.bddApiService.putSend("product/" + String(product.id), product).subscribe();
@@ -21,6 +26,6 @@ export class ProductService {
 
   //Supprime un produit de la bdd
   public delete(product: Product) {
-    return this.bddApiService.putSend("product/delete/" + String(product.id), product).subscribe();
+    return this.bddApiService.putSend("product/delete/" + String(product.id), product);
   }
 }
