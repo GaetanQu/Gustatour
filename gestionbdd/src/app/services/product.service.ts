@@ -16,6 +16,7 @@ export class ProductService {
 
   //Ajoute un produit à la bdd
   public add(product: Product): Observable<void> {
+    console.log(product);
     return this.bddApiService.postSend("product/add", product);
   }
 

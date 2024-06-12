@@ -2,7 +2,7 @@
 <mat-form-field>
     <mat-label>Rechercher parmi les ingrédients</mat-label>
     <mat-icon matPrefix>search</mat-icon>
-    <input matInput type="search" [(ngModel)]="searchTerm" (input)="filterIngredientsByName()">
+    <input matInput type="search" [(ngModel)]="searchFilter" (input)="filterIngredient(typeOfIngredientFilter, searchFilter)">
 </mat-form-field>
 
 <!-- Tableau d'ingrédients -->
@@ -37,10 +37,10 @@
         <th mat-header-cell *matHeaderCellDef>
             <h4>Type d'ingrédient</h4>
             <!-- Liste déroulante pour filtrer par type -->
-            <mat-chip-listbox>
-                <mat-chip-option selected (click)="clearfilter()">Tous</mat-chip-option>
+            <mat-chip-listbox [(ngModel)]="typeOfIngredientFilter" (change)="filterIngredient($event.value, searchFilter)">
+                <mat-chip-option [value]="'all'">Tous</mat-chip-option>
                 @for (typeOfIngredient of typesOfIngredient; track $index) {
-                    <mat-chip-option (click)="filterIngredientsByType(typeOfIngredient)">{{ typeOfIngredient.name }}</mat-chip-option>
+                    <mat-chip-option [value]="typeOfIngredient.name">{{ typeOfIngredient.name }}</mat-chip-option>
                 }
             </mat-chip-listbox>
         </th>
@@ -51,7 +51,7 @@
             } @else {
                 <mat-form-field>
                     <mat-label>Catégorie</mat-label>
-                    <mat-select [(ngModel)]="ingredient.typeOfIngredient" [compareWith]="compareObjects">
+                    <mat-select [(ngModel)]="ingredient.typeOfIngredient" [compareWith]="compareObjectsService.compareIngredients">
                         @for (typeOfIngredient of typesOfIngredient; track $index) {
                             <mat-option [value]="typeOfIngredient">
                                 {{typeOfIngredient.name}}
@@ -93,7 +93,7 @@
                 <!-- Sélection des allergènes en mode édition -->
                 <mat-form-field>
                     <mat-label>Allergènes</mat-label>
-                    <mat-select [(ngModel)]="ingredient.allergenes" [compareWith]="compareObjects" multiple>
+                    <mat-select [(ngModel)]="ingredient.allergenes" [compareWith]="compareObjectsService.compareIngredients" multiple>
                         @for (allergene of allergenes; track $index) {
                             <mat-option [value]="allergene">{{ allergene.name }}</mat-option>
                         }
