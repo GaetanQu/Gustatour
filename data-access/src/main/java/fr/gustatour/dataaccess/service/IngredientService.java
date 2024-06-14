@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import fr.gustatour.dataaccess.model.Ingredient;
 import fr.gustatour.dataaccess.model.Product;
 import fr.gustatour.dataaccess.repository.IngredientRepository;
-import fr.gustatour.dataaccess.repository.ProductRepository;
 
 @Service
 public class IngredientService {
