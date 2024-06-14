@@ -23,5 +23,7 @@ import { AppComponent } from '../app.component';
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent {
-  constructor(public appComponent: AppComponent){}
+  constructor(
+    public appComponent: AppComponent
+  ){}
 }

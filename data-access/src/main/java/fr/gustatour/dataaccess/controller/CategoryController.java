@@ -15,6 +15,7 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    //Retourne toutes les catégories
     @GetMapping("/all")
     public Iterable<Category> getAllCategories(){
         return categoryService.getCategories();

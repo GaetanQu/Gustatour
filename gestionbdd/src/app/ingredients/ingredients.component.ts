@@ -77,7 +77,7 @@ export class IngredientsComponent {
           }
         });
 
-        // Définir le filtre et le tri de la table
+        // Définir le filtre de la table
         this.ingredientSource.filterPredicate = (data: Ingredient, filter: string) => {
           const [typeOfIngredientFilter, searchFilter] = filter.split('$');
 

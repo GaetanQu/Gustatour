@@ -70,6 +70,7 @@ export class ProductsComponent {
       console.log(result);
       if(result[0] && result[0] === "save") {
         result[1].available = true;
+        result[1].image_name = "";
         this.productService.add(result[1])
         .subscribe(() =>{
           this.allProducts.push(result[1]);

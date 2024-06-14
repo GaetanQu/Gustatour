@@ -26,7 +26,8 @@ mat-card{
 }
 
 #recipe-dialog{
-    width: 70vw;
+    max-width: 70vw;
+    min-width: 50vw;
     max-height: 90vh;
 
     #menu{

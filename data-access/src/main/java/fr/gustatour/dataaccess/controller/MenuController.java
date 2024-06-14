@@ -14,6 +14,7 @@ public class MenuController {
     @Autowired
     private MenuService menuService;
 
+    //Retourne tous les menus
     @RequestMapping("/all")
     public Iterable<Menu> getAllMenus(){
         return menuService.getMenus();

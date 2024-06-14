@@ -12,6 +12,7 @@ public class MenuService {
     @Autowired
     private MenuRepository menuRepository;
 
+    //Retourne tous les menus
     public Iterable<Menu> getMenus(){
         return menuRepository.findAll();
     }

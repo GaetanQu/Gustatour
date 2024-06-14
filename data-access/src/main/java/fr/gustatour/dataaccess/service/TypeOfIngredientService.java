@@ -12,6 +12,7 @@ public class TypeOfIngredientService {
     @Autowired
     private TypeOfIngredientRepository typeOfIngredientRepository;
 
+    //Retourne tous les types d'ingrédients
     public Iterable<TypeOfIngredient> getTypesOfIngredient(){
         return typeOfIngredientRepository.findAll();
     }

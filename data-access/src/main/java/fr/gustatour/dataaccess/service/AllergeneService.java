@@ -12,6 +12,7 @@ public class AllergeneService {
     @Autowired
     private AllergeneRepository allergeneRepository;
 
+    //Retourne tous les allergènes
     public Iterable<Allergene> getAllergenes(){
         return allergeneRepository.findAll();
     }

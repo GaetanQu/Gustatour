@@ -15,6 +15,7 @@ public class AllergeneController {
     @Autowired
     private AllergeneService allergeneService;
 
+    //Retourne tous les allergènes
     @GetMapping("/all")
     public Iterable<Allergene> getAllAllergenes(){
         return allergeneService.getAllergenes();

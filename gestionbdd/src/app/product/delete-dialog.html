@@ -1,8 +1,13 @@
+<!-- Boîte de dialogue pour la confirmation de suppression d'un produit -->
 <h1 mat-dialog-title>Suppression</h1>
 <mat-dialog-content>
     Êtes-vous sûr.e de vouloir supprimer ce produit ?
 </mat-dialog-content>
+
+<!-- Boutons de fermeture de la boîte de dialogue -->
 <mat-dialog-actions align="end">
+    <!-- Bouton d'annulation de la suppression -->
     <button mat-button [mat-dialog-close]="false">Non</button>
+    <!-- Bouton de suppression -->
     <button mat-flat-button [mat-dialog-close]="true" color="warn" cdkFocusInitial>Oui</button>
 </mat-dialog-actions>

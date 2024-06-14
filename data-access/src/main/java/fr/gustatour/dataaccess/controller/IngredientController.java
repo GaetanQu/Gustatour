@@ -20,12 +20,14 @@ public class IngredientController {
     @Autowired
     private IngredientService ingredientService;
 
+    //Retourne tous les ingrédients
     @GetMapping("/all")
     public Iterable<Ingredient> getAllIngredients(){
         return ingredientService.getIngredients();
     }
 
-    @PutMapping("/{ingredientId}")
+    //Met à jour un ingrédient
+    @PutMapping("/update/{ingredientId}")
     public ResponseEntity<Void> updateIngredient(@PathVariable int ingredientId, @RequestBody Ingredient updatedIngredient) {
         ingredientService.updateIngredient(ingredientId, updatedIngredient);
         return ResponseEntity.noContent().build();

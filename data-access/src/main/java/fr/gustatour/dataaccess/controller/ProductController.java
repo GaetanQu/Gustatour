@@ -23,23 +23,27 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
+    //Retourne tous les produits
     @GetMapping("/all")
     public Iterable<Product> getAllProducts() {
         return productService.getProducts();
     }
 
-    @PutMapping("/{productId}")
+    //Met à jour un produit
+    @PutMapping("/update/{productId}")
     public ResponseEntity<Void> updateProduct(@PathVariable int productId, @RequestBody Product updatedProduct) {
         productService.updateProduct(productId, updatedProduct);
         return ResponseEntity.noContent().build();
     }
 
+    //Supprime un produit
     @PutMapping("/delete/{productId}")
     public ResponseEntity<Product> deleteProduct(@PathVariable int productId, @RequestBody Product deletedProduct) {
         productService.deleteProduct(productId, deletedProduct);
         return ResponseEntity.ok(deletedProduct);
     }
 
+    //Crée un produit
     @PostMapping("/add")
     public ResponseEntity<Product> addProduct(@RequestBody Product newProduct) {
         Product savedProduct = productService.saveProduct(newProduct);

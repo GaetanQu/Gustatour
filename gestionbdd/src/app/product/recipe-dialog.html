@@ -1,37 +1,35 @@
-<main id="recipe-dialog">
-    <mat-card-header>
-        <mat-card-title>
-            <h3>{{ product.name }}</h3>
-        </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-        <mat-form-field id="menu">
-            <mat-label>Menu</mat-label>
-            <mat-select [(ngModel)]="product.menu" [compareWith]="compareObjects">
-                @for (menu of menus; track $index) {
-                    <mat-option [value]="menu">
-                        {{ menu.name }}
-                    </mat-option>
+<!-- Boite de dialogue pour la modification de la recette d'un plat -->
+<h3 mat-dialog-title>{{ product.name }}</h3>
+<mat-dialog-content id="recipe-dialog">
+    <!-- Champs de formulaire de menu -->
+    <mat-form-field id="menu">
+        <mat-label>Menu</mat-label>
+        <mat-select [(ngModel)]="product.menu" [compareWith]="compareObjectsService.compareIngredients">
+            @for (menu of menus; track $index) {
+                <mat-option [value]="menu">
+                    {{ menu.name }}
+                </mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+    <!-- Checkboxes de tous les ingrédients regroupés par type -->
+    @for (typeOfIngredient of typesOfIngredient; track $index) {
+        <h3>{{ typeOfIngredient.name }}</h3>
+        <div class="ingredients">
+            @for (ingredient of ingredients; track $index) {
+                @defer (when ingredient.typeOfIngredient.id === typeOfIngredient.id) {
+                    <mat-checkbox color="primary" [checked]="checkIngredients(ingredient)" (change)="toggleIngredientToProduct(ingredient)">
+                        {{ ingredient.name }}
+                    </mat-checkbox>
                 }
-            </mat-select>
-        </mat-form-field>
-        @for (typeOfIngredient of typesOfIngredient; track $index) {
-            <h3>{{ typeOfIngredient.name }}</h3>
-            <div class="ingredients">
-                @for (ingredient of ingredients; track $index) {
-                    @defer (when ingredient.typeOfIngredient.id === typeOfIngredient.id) {
-                        <mat-checkbox color="primary" [checked]="checkIngredients(ingredient)" (change)="toggleIngredientToProduct(ingredient)">
-                            {{ ingredient.name }}
-                        </mat-checkbox>
-                    }
-                }
-            </div>
-        }
-    </mat-card-content>
-    <mat-card-footer>
-        <mat-dialog-actions>
-            <button mat-button [mat-dialog-close]="false"><mat-icon>cancel</mat-icon>Annuler</button>
-            <button mat-flat-button color="accent" [mat-dialog-close]="true"><mat-icon>save</mat-icon>Enregistrer</button>
-        </mat-dialog-actions>
-    </mat-card-footer>
-</main>
+            }
+        </div>
+    }
+</mat-dialog-content>
+<!-- Boutons de fermeture de la boîte de dialogue -->
+<mat-dialog-actions align="end">
+    <!-- Bouton d'annulation -->
+    <button mat-button [mat-dialog-close]="false"><mat-icon>cancel</mat-icon>Annuler</button>
+    <!-- Bouton d'enregistrement de la liste d'ingrédients -->
+    <button mat-flat-button color="accent" [mat-dialog-close]="true"><mat-icon>save</mat-icon>Enregistrer</button>
+</mat-dialog-actions>

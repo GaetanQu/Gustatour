@@ -14,10 +14,12 @@ public class IngredientService {
     @Autowired
     private IngredientRepository ingredientRepository;
 
+    //Retourne tous les ingrédients
     public Iterable<Ingredient> getIngredients(){
         return ingredientRepository.findAll();
     }
 
+    //Met à jour un ingrédient
     public void updateIngredient(int ingredientId, Ingredient updatedIngredient) {
         Optional<Ingredient> optionalIngredient = ingredientRepository.findById(ingredientId);
 

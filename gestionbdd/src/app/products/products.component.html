@@ -1,12 +1,19 @@
+<!-- Component contenant tous les produits en bdd -->
+
+<!-- Searchbar -->
 <mat-form-field id="searchbar">
     <input matInput type="search" placeholder="Rechercher" (input)="filterProductsByName()" [(ngModel)]="searchTerm">
     <mat-icon matPrefix>search</mat-icon>
 </mat-form-field>
+
+<!-- Bouton d'ajout d'un produit -->
 <button id="addProduct" mat-flat-button color="primary" (click)="openAddProductDialog()"><mat-icon>add</mat-icon>Ajouter un produit</button>
-<div class="products">
+
+<!-- Liste des produit -->
+<main class="products">
     @for (product of products; track $index) {
         <app-product
         [product]="product"
         ></app-product>
     }
-</div>
+</main>

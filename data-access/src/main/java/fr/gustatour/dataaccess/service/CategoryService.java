@@ -12,6 +12,7 @@ public class CategoryService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    //Retourne toutes les catégories
     public Iterable<Category> getCategories(){
         return categoryRepository.findAll();
     }

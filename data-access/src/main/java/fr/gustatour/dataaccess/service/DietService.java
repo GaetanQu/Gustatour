@@ -12,6 +12,7 @@ public class DietService {
     @Autowired
     private DietRepository dietRepository;
 
+    //Retourne tous les régimes alimentaires
     public Iterable<Diet> getDiets(){
         return dietRepository.findAll();
     }

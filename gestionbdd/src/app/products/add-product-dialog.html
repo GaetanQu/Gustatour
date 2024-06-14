@@ -1,28 +1,49 @@
+<!-- Boîte de dialogue pour l'ajout d'un produit en base de données -->
 <h1 mat-dialog-title>Ajouter un produit</h1>
+
 <mat-dialog-content>
+    <!-- Teste si le produit ajouté est un plat ou non -->
+    <!-- ~ME SEMBLE MAL OPTIMISÉ -->
     @if (newProduct.category && newProduct.category.id === 1) {
+        <!-- Stepper permettant la séléction de l'étape de création du produit -->
         <mat-stepper>
-            <mat-step>
+
+            <!-- Étape reprenant la création standard du produit (~répétée) -->
+            <mat-step label="Informations produit">
+
+                <!-- Bouton d'ajout de l'image -->
+                <!-- ~NE FONCTIONNE PAS ENCORE -->
                 <button mat-flat-button color="primary"><mat-icon>image</mat-icon>Ajouter une image</button>
                 <input hidden type="file" accept=".png">
+
                 <div class="line">
-                    <mat-form-field required>
+                    <!-- Champs de formulaire pour le nom du produit -->
+                    <mat-form-field>
                         <mat-label>Nom du produit</mat-label>
                         <input matInput type="text" [(ngModel)]="newProduct.name" required>
+
+                        <!-- Gestion de l'erreur "empty" -->
                         @if (!newProduct.name) {
                             <mat-error>Le produit doit être nommé</mat-error>
                         }
                     </mat-form-field>
-                    <mat-form-field required>
+
+                    <!-- Champs de formulaire pour le prix du produit -->
+                    <mat-form-field>
                         <mat-label>Prix</mat-label>
                         <input matInput type="number" step="0.01" min="0" [(ngModel)]="newProduct.price" required>
                         <span matTextSuffix>€</span>
+
+                        <!-- Gestion de l'erreur "empty" -->
                         @if (!newProduct.price) {
                             <mat-error>Le produit doit avoir un prix !</mat-error>
                         }
                     </mat-form-field>
                 </div>
+
                 <div class="line">
+
+                    <!-- Champs de formulaire pour la catégorie du produit -->
                     <mat-form-field>
                         <mat-label>Catégorie</mat-label>
                         <mat-select [(ngModel)]="newProduct.category" required>
@@ -32,42 +53,56 @@
                                 </mat-option>
                             }
                         </mat-select>
+
+                        <!-- Gestion de l'erreur "empty" -->
                         @if (!newProduct.category) {
                             <mat-error>Le produit doit appartenir à une catégorie</mat-error>
                         }
                     </mat-form-field>
                 </div>
+
+                <!-- Bouton permettant de passer à l'étape suivante -->
                 <button mat-flat-button color="primary" matStepperNext><mat-icon matPrefix>arrow_forward</mat-icon>Suivant</button>
             </mat-step>
-            <mat-step>
-                    <h3>{{ newProduct.name }}</h3>
-                    <mat-form-field>
-                        <mat-label>Menu</mat-label>
-                        <mat-select [(ngModel)]="newProduct.menu">
-                            @for (menu of menus; track $index) {
-                                <mat-option [value]="menu">
-                                    {{ menu.name }}
-                                </mat-option>
+
+            <!-- Étape pour la création de la recette -->
+            <!-- ~reprend du code de recipe-dialog.html du component product -->
+            <mat-step label="Recette et menu">
+                <h3>{{ newProduct.name }}</h3>
+
+                <!-- Champs de formulaire pour le menu correspondant au produit -->
+                <mat-form-field>
+                    <mat-label>Menu</mat-label>
+                    <mat-select [(ngModel)]="newProduct.menu">
+                        @for (menu of menus; track $index) {
+                            <mat-option [value]="menu">
+                                {{ menu.name }}
+                            </mat-option>
+                        }
+                    </mat-select>
+                </mat-form-field>
+
+                <!-- Checkboxes de tous les ingrédients -->
+                @for (typeOfIngredient of typesOfIngredient; track $index) {
+                    <h3>{{ typeOfIngredient.name }}</h3>
+                    <div class="ingredients">
+                        @for (ingredient of ingredients; track $index) {
+                            @defer (when ingredient.typeOfIngredient.id === typeOfIngredient.id) {
+                                <mat-checkbox color="primary" (change)="toggleIngredientToProduct(ingredient)">
+                                    {{ ingredient.name }}
+                                </mat-checkbox>
                             }
-                        </mat-select>
-                    </mat-form-field>
-                    @for (typeOfIngredient of typesOfIngredient; track $index) {
-                        <h3>{{ typeOfIngredient.name }}</h3>
-                        <div class="ingredients">
-                            @for (ingredient of ingredients; track $index) {
-                                @defer (when ingredient.typeOfIngredient.id === typeOfIngredient.id) {
-                                    <mat-checkbox color="primary" (change)="toggleIngredientToProduct(ingredient)">
-                                        {{ ingredient.name }}
-                                    </mat-checkbox>
-                                }
-                            }
-                        </div>
-                    }
+                        }
+                    </div>
+                }
             </mat-step>
         </mat-stepper>
     }
 
     @else {
+
+        <!-- Reprise du code de la création standard du produit -->
+        <!-- ~RÉPÉTITION DE CODE -->
         <button mat-flat-button color="primary"><mat-icon>image</mat-icon>Ajouter une image</button>
         <input hidden type="file" accept=".png">
         <div class="line">
@@ -104,7 +139,11 @@
         </div>
     }
 </mat-dialog-content>
+
+<!-- Boutons de fermeture de la boîte de dialogue -->
 <mat-dialog-actions>
+    <!-- Bouton d'annulation -->
     <button mat-button mat-dialog-close="cancel"><mat-icon>cancel</mat-icon>Annuler</button>
+    <!-- Bouton d'ajout du produit -->
     <button mat-flat-button color="accent" [mat-dialog-close]="['save', newProduct]"><mat-icon>save</mat-icon>Valider</button>
 </mat-dialog-actions>

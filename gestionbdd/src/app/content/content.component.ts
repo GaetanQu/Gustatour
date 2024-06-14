@@ -1,4 +1,4 @@
-//Import pour Angular
+//Imports pour Angular
 import { Component } from '@angular/core';
 
 //Imports de components Angular Material
@@ -23,8 +23,4 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './content.component.scss'
 })
 export class ContentComponent {
-  constructor(){ }
-
-  ngOnInit(){
-  }
 }

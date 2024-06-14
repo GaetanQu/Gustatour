@@ -15,21 +15,23 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    //Retourne tous les produits
     public Iterable<Product> getProducts() {
         return productRepository.findAll();
     }
 
+    //Crée un produit
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
 
+    //Met à jout un produit
     public void updateProduct(int productId, Product updatedProduct) {
         Optional<Product> optionalProduct = productRepository.findById(productId);
 
         if (optionalProduct.isPresent()) {
             Product originalProduct = optionalProduct.get();
 
-            // Mettre à jour les propriétés du produit
             if (updatedProduct.getName() != null) {
                 originalProduct.setName(updatedProduct.getName());
             }
@@ -61,6 +63,7 @@ public class ProductService {
         }
     }
 
+    //Supprime un produit
     public void deleteProduct(int productId, Product deletedProduct){
         this.productRepository.deleteById(productId);
     }
