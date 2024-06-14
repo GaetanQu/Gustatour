@@ -35,8 +35,8 @@ public class Product {
 	@Column(name = "available")
 	private boolean available;
 	
-	@Column(name = "image_name")
-	private String image_name;
+	@Column(name = "image_link")
+	private String image_link;
 	
 	@OneToOne
 	@JoinColumn(name = "menu_id")
@@ -60,6 +60,7 @@ public class Product {
 		inverseJoinColumns = @JoinColumn(name = "ingredient_id")
 	)
 	private List<Ingredient> ingredients = new ArrayList<>();
+	
 
 	public int getId() {
 		return this.id;
@@ -97,12 +98,12 @@ public class Product {
 		this.available = available;
 	}
 
-	public String getImage_name() {
-		return this.image_name;
+	public String getImage_link() {
+		return this.image_link;
 	}
 
-	public void setImage_name(String image_name) {
-		this.image_name = image_name;
+	public void setImage_link(String image_link) {
+		this.image_link = image_link;
 	}
 
 	public Menu getMenu() {
@@ -136,5 +137,5 @@ public class Product {
 	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
 	}
-		
+
 }

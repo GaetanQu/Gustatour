@@ -30,6 +30,7 @@ import { Ingredient } from '../../../models/ingredient.model';
 import { TypeOfIngredient } from '../../../models/type-of-ingredient.model';
 import { CompareObjectsService } from '../../../services/compare-objects.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ImageApiService } from '../../../services/image-api.service';
 
 /******************************************************
  * Composant gérant les attributs d'un produit unique *
@@ -122,7 +123,7 @@ export class ProductComponent {
 
   // Ouverture de la boîte de dialogue de modification de la recette d'un produit
   public openRecipeDialog(product: Product) {
-    const dialogRef = this.matDialog.open(recipeDialog, {
+    const dialogRef = this.matDialog.open(RecipeDialog, {
       // Transfert des données du produit dans la boîte de dialogue
       data: { product: product }
     });
@@ -133,6 +134,12 @@ export class ProductComponent {
         this.product = JSON.parse(JSON.stringify(this.oldProduct));
       }
     });
+  }
+
+  public openImageDialog(product: Product) {
+    const dialogRef = this.matDialog.open(ImageDialog, {
+      data: {product: product}
+    })
   }
 
   // Mise à jour du produit
@@ -174,8 +181,8 @@ export class deleteDialog {
     MatCheckboxModule,
   ],
 })
-export class recipeDialog {
-  @Input() menus !: Menu[];
+export class RecipeDialog {
+  menus !: Menu[];
   ingredients!: Ingredient[];
   typesOfIngredient: TypeOfIngredient[] = [];
   product!: Product;
@@ -227,5 +234,43 @@ export class recipeDialog {
     } else {
       this.product.ingredients.splice(this.product.ingredients.indexOf(ingredient), 1);
     }
+  }
+}
+
+/***********************************************************
+ * Boîte de dialogue pour la gestion de l'image du produit *
+ ***********************************************************/
+@Component({
+  selector: 'image-dialog',
+  templateUrl: 'image-dialog.html',
+  styleUrl: 'product.component.scss',
+  standalone: true,
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+  ]
+})
+export class ImageDialog {
+  product!: Product;
+
+  image!: any;
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data:any,
+
+    private imageApiService: ImageApiService
+  ) {
+    this.product = data.product;
+  }
+
+  ngOnInit() {
+    console.log(this.product);
+  }
+
+  public onImageChange(event: any) {
+    this.image = event.target.files;
+    console.log(this.image);
+    this.imageApiService.uploadImage(this.image, this.product.name);
   }
 }

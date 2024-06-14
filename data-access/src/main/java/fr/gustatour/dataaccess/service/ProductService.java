@@ -41,8 +41,8 @@ public class ProductService {
             if (updatedProduct.getMenu() != null) {
                 originalProduct.setMenu(updatedProduct.getMenu());
             }
-            if (updatedProduct.getImage_name() != null) {
-                originalProduct.setImage_name(updatedProduct.getImage_name());
+            if (updatedProduct.getImage_link() != null) {
+                originalProduct.setImage_link(updatedProduct.getImage_link());
             }
             if (updatedProduct.getDiet_id() != null) {
                 originalProduct.setDiet_id(updatedProduct.getDiet_id());

@@ -1,10 +1,10 @@
 <!-- Carte Angular Material pour l'affichage d'un produit -->
 <mat-card>
     <!-- Image de la carte -->
-    <img mat-card-image src="#" alt="Pas d'image, penser à en ajouter une">
+    <img mat-card-image [src]="product.image_link" alt="Pas d'image, penser à en ajouter une">
     
     <!-- Bouton pour modifier l'image du produit -->
-    <button mat-button><mat-icon>image</mat-icon>Modifier l'image pour {{ product.name }}</button>
+    <button mat-button (click)="openImageDialog(product)"><mat-icon>image</mat-icon>Modifier l'image pour {{ product.name }}</button>
     
     <!-- Ligne pour le nom et le prix du produit -->
     <div class="line">

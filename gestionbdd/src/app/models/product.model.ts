@@ -5,7 +5,7 @@ import { Menu } from "./menu.model";
 export class Product{
     id?: number;
     name!: string;
-    image_name!: string;
+    image_link!: string;
     category!: Category;
     menu!: Menu;
     available!: boolean;

@@ -51,7 +51,10 @@ export class IngredientsComponent {
   typeOfIngredientFilter: string = 'all';
   searchFilter: string = '';
 
+  // Ordre d'affichages des collonnes du tableau
   displayedColumns: string[] = ['edit', 'name', 'type', "allergenes", 'available'];
+
+  // Création du tableau Material contenant les ingrédients
   ingredientSource: MatTableDataSource<Ingredient> = new MatTableDataSource<Ingredient>();
 
   @ViewChild(MatSort) sort!: MatSort;
