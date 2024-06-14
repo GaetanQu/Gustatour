@@ -1,9 +1,0 @@
-<h1 mat-dialog-title>Modifier l'image pour {{ product.name }}</h1>
-<mat-dialog-content style="width: 40vw; height: 90vh;">
-    <img [src]="product.image_link" style="width: 100%; min-height: 50%;" (ondrop)="onImageChange($event)">
-    <input type="file" accept=".png, .jpg" (change)="onImageChange($event)">
-</mat-dialog-content>
-<mat-dialog-actions>
-    <button mat-button mat-dialog-close="false"><mat-icon>cancel</mat-icon>Annuler</button>
-    <button mat-button mat-dialog-close="true"><mat-icon>save</mat-icon>Enregistrer</button>
-</mat-dialog-actions>

@@ -17,7 +17,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Imports de services
-import { CategoryService } from '../../../services/category.service';
 import { MenuService } from '../../../services/menu.service';
 import { ProductService } from '../../../services/product.service';
 import { IngredientService } from '../../../services/ingredient.service';
@@ -30,7 +29,6 @@ import { Ingredient } from '../../../models/ingredient.model';
 import { TypeOfIngredient } from '../../../models/type-of-ingredient.model';
 import { CompareObjectsService } from '../../../services/compare-objects.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ImageApiService } from '../../../services/image-api.service';
 
 /******************************************************
  * Composant gérant les attributs d'un produit unique *
@@ -136,16 +134,19 @@ export class ProductComponent {
     });
   }
 
-  public openImageDialog(product: Product) {
-    const dialogRef = this.matDialog.open(ImageDialog, {
-      data: {product: product}
-    })
+  // Gestion du clic sur le bouton vers l'input (à cause de l'absence de component matInput pour le type file)
+  public clickOnChangeImage() {
+    let inputButton = document.getElementById("image-button");
+    if(inputButton) {
+      inputButton.click();
+    }
   }
 
   // Mise à jour du produit
   public updateProduct(){
     this.productService.update(this.product);
     this.oldProduct = JSON.parse(JSON.stringify(this.product));
+    
   }
 }
 
@@ -219,12 +220,19 @@ export class RecipeDialog {
     .pipe(take(1))
     .subscribe((data:Menu[])=>{
       this.menus = data;
+      console.log(this.menus)
+      console.log(this.product.menu)
     })
   }
 
   // Vérification de la présence d'un ingrédient dans le produit
   public checkIngredients(ingredient: Ingredient): boolean {
-    return !!this.product.ingredients.find(productIngredient => productIngredient.id === ingredient.id);
+    if(this.product.ingredients.find(productIngredient => productIngredient.id === ingredient.id)) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
   // Ajoute ou retire un ingrédient de la liste des ingrédients du produit
@@ -234,43 +242,5 @@ export class RecipeDialog {
     } else {
       this.product.ingredients.splice(this.product.ingredients.indexOf(ingredient), 1);
     }
-  }
-}
-
-/***********************************************************
- * Boîte de dialogue pour la gestion de l'image du produit *
- ***********************************************************/
-@Component({
-  selector: 'image-dialog',
-  templateUrl: 'image-dialog.html',
-  styleUrl: 'product.component.scss',
-  standalone: true,
-  imports: [
-    MatDialogModule,
-    MatButtonModule,
-    MatIconModule,
-  ]
-})
-export class ImageDialog {
-  product!: Product;
-
-  image!: any;
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data:any,
-
-    private imageApiService: ImageApiService
-  ) {
-    this.product = data.product;
-  }
-
-  ngOnInit() {
-    console.log(this.product);
-  }
-
-  public onImageChange(event: any) {
-    this.image = event.target.files;
-    console.log(this.image);
-    this.imageApiService.uploadImage(this.image, this.product.name);
   }
 }

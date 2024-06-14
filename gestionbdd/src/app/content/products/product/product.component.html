@@ -4,7 +4,8 @@
     <img mat-card-image [src]="product.image_link" alt="Pas d'image, penser à en ajouter une">
     
     <!-- Bouton pour modifier l'image du produit -->
-    <button mat-button (click)="openImageDialog(product)"><mat-icon>image</mat-icon>Modifier l'image pour {{ product.name }}</button>
+    <input type="file" accept=".png" hidden id="image-button">
+    <button mat-button (click)="clickOnChangeImage()"><mat-icon>image</mat-icon>Modifier l'image pour {{ product.name }}</button>
     
     <!-- Ligne pour le nom et le prix du produit -->
     <div class="line">

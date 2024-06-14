@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.gustatour.dataaccess.model.Ingredient;
 import fr.gustatour.dataaccess.model.Product;
 import fr.gustatour.dataaccess.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -55,6 +56,8 @@ public class ProductService {
             
             if (updatedProduct.getIngredients() != null) {
                 originalProduct.setIngredients(updatedProduct.getIngredients());
+
+                setProductAvailabilityByIngredientAvailability(originalProduct);
             }
 
             productRepository.save(originalProduct);
@@ -62,6 +65,19 @@ public class ProductService {
             throw new EntityNotFoundException("Product not found with id " + productId);
         }
     }
+
+    //Teste si un produit est disponible en fonction de la disponibilité des ingrédients
+    public void setProductAvailabilityByIngredientAvailability (Product product) {
+        for(Ingredient ingredient : product.getIngredients()) {
+            if(!ingredient.isAvailable()) {
+                product.setAvailable(false);
+                break;
+            }
+
+            product.setAvailable(true);
+        }
+    }
+
 
     //Supprime un produit
     public void deleteProduct(int productId, Product deletedProduct){

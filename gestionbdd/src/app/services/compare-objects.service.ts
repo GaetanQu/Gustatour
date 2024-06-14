@@ -17,7 +17,7 @@ export class CompareObjectsService {
 
     public compareMenus(men1: Menu, men2: Menu) :boolean {
         if(men1 && men2) {
-            return men1 === men2;
+            return men1 === men2 || men1.id === men2.id;
         }
         else {
             return false;
