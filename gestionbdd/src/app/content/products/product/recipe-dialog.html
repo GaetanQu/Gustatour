@@ -4,7 +4,7 @@
     <!-- Champs de formulaire de menu -->
     <mat-form-field id="menu">
         <mat-label>Menu</mat-label>
-        <mat-select [(ngModel)]="product.menu" [compareWith]="compareObjectsService.compareIngredients">
+        <mat-select [(ngModel)]="product.menu" [compareWith]="compareObjectsService.compareMenus">
             @for (menu of menus; track $index) {
                 <mat-option [value]="menu">
                     {{ menu.name }}
@@ -27,7 +27,7 @@
     }
 </mat-dialog-content>
 <!-- Boutons de fermeture de la boîte de dialogue -->
-<mat-dialog-actions align="end">
+<mat-dialog-actions>
     <!-- Bouton d'annulation -->
     <button mat-button [mat-dialog-close]="false"><mat-icon>cancel</mat-icon>Annuler</button>
     <!-- Bouton d'enregistrement de la liste d'ingrédients -->

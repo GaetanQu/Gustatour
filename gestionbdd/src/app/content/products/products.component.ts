@@ -12,22 +12,23 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 
 //Imports de services
-import { ProductService } from '../services/product.service';
-import { CategoryService } from '../services/category.service';
+import { ProductService } from '../../services/product.service';
+import { CategoryService } from '../../services/category.service';
 
 //Imports de modèles
-import { Product } from '../models/product.model';
-import { Category } from '../models/category.model';
+import { Product } from '../../models/product.model';
+import { Category } from '../../models/category.model';
 
 //Imports de components
-import { ProductComponent } from '../product/product.component';
+import { ProductComponent } from './product/product.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MenuService } from '../services/menu.service';
-import { Menu } from '../models/menu.model';
-import { Ingredient } from '../models/ingredient.model';
-import { TypeOfIngredient } from '../models/type-of-ingredient.model';
+import { MenuService } from '../../services/menu.service';
+import { Menu } from '../../models/menu.model';
+import { Ingredient } from '../../models/ingredient.model';
+import { TypeOfIngredient } from '../../models/type-of-ingredient.model';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { IngredientService } from '../services/ingredient.service';
+import { IngredientService } from '../../services/ingredient.service';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'app-products',
@@ -46,38 +47,54 @@ import { IngredientService } from '../services/ingredient.service';
   styleUrl: './products.component.scss'
 })
 export class ProductsComponent {
-  allProducts!: Product[];
   products!: Product[];
+  filteredProducts!: Product[];
   categories!: Category[];
+  menus!: Menu[];
   searchTerm!: string;
 
   constructor(
     private productService: ProductService,
+    private categoryService: CategoryService,
+    private menuService: MenuService,
     public dialog: MatDialog,
   ){ }
 
   ngOnInit(){
     this.productService.getAll()
+    .pipe(take(1))
     .subscribe((data:Product[])=>{
-      this.allProducts = data;
-      this.products = [...data] ;
+      this.products = data;
+      this.filteredProducts = [...data] ;
+    });
+
+    this.categoryService.getAll()
+    .pipe(take(1))
+    .subscribe((data: Category[])=>{
+      this.categories = data;
     });
   }
 
+  // Ouverture de la boîte de dialogue pour l'ajout d'un produit
   public openAddProductDialog(): void {
     const dialogRef = this.dialog.open(AddProductDialog);
+
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
+      // Si result existe, alors il est sous la forme [string, object]
       if(result[0] && result[0] === "save") {
+        // Définition de certaines valeurs par défaut pour le produit
         result[1].available = true;
         result[1].image_name = "";
+
+        // Ajout du produit en bdd
         this.productService.add(result[1])
         .subscribe(() =>{
-          this.allProducts.push(result[1]);
+
+          // Mise à jour de la liste de produits          
           this.productService.getAll()
           .subscribe((data: Product[]) =>{
+            this.filteredProducts = [...data]
             this.products = [...data]
-            this.allProducts = [...data]
             this.filterProductsByName();
           });
         });
@@ -85,14 +102,15 @@ export class ProductsComponent {
     });
   }
 
+  // Filtrage des produits selon leur nom
   public filterProductsByName() {
     if(this.searchTerm) {
-      this.products = this.allProducts.filter(product => 
+      this.filteredProducts = this.products.filter(product => 
         product.name.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(this.searchTerm.trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''))
       );
     }
     else {
-      this.products = this.allProducts.filter(product => 
+      this.filteredProducts = this.products.filter(product => 
         product.name.toLowerCase().includes("")
       );
     }

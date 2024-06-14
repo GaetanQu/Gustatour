@@ -1,2 +1,8 @@
-<!-- Composant dépendant de l'URL -->
-<router-outlet></router-outlet>
+<!-- Composant principal dépendant de l'URL -->
+@defer () {
+    <router-outlet></router-outlet>
+}
+
+@loading {
+    <mat-spinner></mat-spinner>
+}

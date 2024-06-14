@@ -11,9 +11,10 @@
 
 <!-- Liste des produit -->
 <main class="products">
-    @for (product of products; track $index) {
+    @for (product of filteredProducts; track $index) {
         <app-product
         [product]="product"
+        [categories]="categories"
         ></app-product>
     }
 </main>

@@ -17,14 +17,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
 // Imports de modèles
-import { Ingredient } from '../models/ingredient.model';
-import { TypeOfIngredient } from '../models/type-of-ingredient.model';
-import { Allergene } from '../models/allergene.model';
+import { Ingredient } from '../../models/ingredient.model';
+import { TypeOfIngredient } from '../../models/type-of-ingredient.model';
+import { Allergene } from '../../models/allergene.model';
 
 // Imports de services
-import { IngredientService } from '../services/ingredient.service';
-import { AllergenesService } from '../services/allergenes.service';
-import { CompareObjectsService } from '../services/compare-objects.service';
+import { IngredientService } from '../../services/ingredient.service';
+import { AllergenesService } from '../../services/allergenes.service';
+import { CompareObjectsService } from '../../services/compare-objects.service';
 
 
 @Component({
@@ -63,21 +63,22 @@ export class IngredientsComponent {
   ){ }
 
   ngOnInit() {
-    // Initialisation des types d'ingrédients et des allergènes
     this.typesOfIngredient = [];
     
+    // Obtention de tous les ingrédients possibles
     this.ingredientService.getAll()
       .pipe(take(1))
       .subscribe((data: Ingredient[]) => {
         this.ingredientSource.data = data;
 
+        // Création de la liste de types d'ingrédients
         data.forEach(ingredient => {
           if (!this.typesOfIngredient.find(typeOfIngredient => typeOfIngredient.name === ingredient.typeOfIngredient.name)) {
             this.typesOfIngredient.push(ingredient.typeOfIngredient);
           }
         });
 
-        // Définir le filtre de la table
+        // Définition du filtre de la table
         this.ingredientSource.filterPredicate = (data: Ingredient, filter: string) => {
           const [typeOfIngredientFilter, searchFilter] = filter.split('$');
 
@@ -98,37 +99,37 @@ export class IngredientsComponent {
             matchTypes = true;
           }
 
-          console.log(typeOfIngredientFilter)
           return matchNames && matchTypes;
         };
         this.ingredientSource.sort = this.sort;
       });
 
-    this.allergeneService.getAll()
+      // Obtention de tous les allergènes possibles
+      this.allergeneService.getAll()
       .pipe(take(1))
       .subscribe((data: Allergene[]) => {
         this.allergenes = data;
       });
   }
 
-  // Filtrer les ingrédients selon leur type et leur nom
+  // Filtrage des ingrédients selon leur type et leur nom
   filterIngredient(typeOfIngredientFilter: string, searchFilter: string): void {
     const filterValue = `${typeOfIngredientFilter.trim().toLowerCase()}$${searchFilter.trim().toLowerCase()}`;
     this.ingredientSource.filter = filterValue;
   }
 
-  // Activer l'édition d'un ingrédient
+  // Activation de l'édition d'un ingrédient
   editIngredient(ingredient: Ingredient) {
     ingredient.isEditing = true;
   }
 
-  // Enregistrer les modifications d'un ingrédient
+  // Enregistrement des modifications d'un ingrédient
   saveIngredient(ingredient: Ingredient) {
     this.ingredientService.update(ingredient);
     ingredient.isEditing = false;
   }
 
-  // Vérifier si un allergène est sélectionné pour un ingrédient
+  // Vérification de la sélection d'un allergène présent dans un ingrédient
   selectAllergene(ingredient: Ingredient, allergene: Allergene) {
     return ingredient.allergenes.some(ingredientAllergene => ingredientAllergene.id === allergene.id && ingredientAllergene.name === allergene.name);
   }

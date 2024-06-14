@@ -22,7 +22,7 @@ export class ProductService {
 
   //Met à jour un produit dans la bdd
   public update(product: Product) {
-    return this.bddApiService.putSend("product/" + String(product.id), product).subscribe();
+    return this.bddApiService.putSend("product/update/" + String(product.id), product).subscribe();
   }
 
   //Supprime un produit de la bdd

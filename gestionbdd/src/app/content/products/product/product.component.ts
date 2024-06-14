@@ -2,8 +2,8 @@
 import { Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
 
 // Imports de composants Angular
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { Observable, take } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { take } from 'rxjs';
 
 // Imports de composants Angular Material
 import { MatButtonModule } from '@angular/material/button';
@@ -17,18 +17,19 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 
 // Imports de services
-import { CategoryService } from '../services/category.service';
-import { MenuService } from '../services/menu.service';
-import { ProductService } from '../services/product.service';
-import { IngredientService } from '../services/ingredient.service';
+import { CategoryService } from '../../../services/category.service';
+import { MenuService } from '../../../services/menu.service';
+import { ProductService } from '../../../services/product.service';
+import { IngredientService } from '../../../services/ingredient.service';
 
 // Imports de modèles
-import { Product } from '../models/product.model';
-import { Menu } from '../models/menu.model';
-import { Category } from '../models/category.model';
-import { Ingredient } from '../models/ingredient.model';
-import { TypeOfIngredient } from '../models/type-of-ingredient.model';
-import { CompareObjectsService } from '../services/compare-objects.service';
+import { Product } from '../../../models/product.model';
+import { Menu } from '../../../models/menu.model';
+import { Category } from '../../../models/category.model';
+import { Ingredient } from '../../../models/ingredient.model';
+import { TypeOfIngredient } from '../../../models/type-of-ingredient.model';
+import { CompareObjectsService } from '../../../services/compare-objects.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 /******************************************************
  * Composant gérant les attributs d'un produit unique *
@@ -46,40 +47,25 @@ import { CompareObjectsService } from '../services/compare-objects.service';
     MatSlideToggleModule,
     FormsModule,
     MatDialogModule,
-    ProductComponent
+    ProductComponent,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './product.component.html',
   styleUrl: './product.component.scss'
 })
 export class ProductComponent {
   @Input() product!: Product;
-  @Input() allProducts!: Product[];
+  @Input() categories!: Category[];
+
   oldProduct !: Product;
-  menus!: Menu[];
-  categories!: Category[];
 
   constructor(
-    private menuService: MenuService,
-    private categoryService: CategoryService,
     public matDialog: MatDialog,
     private productService: ProductService
   ){}
 
   // Initialisation des données lors du chargement du composant
   ngOnInit(){
-    // ********************************************
-    // * Appels au back NON OPTIMISÉS, À MODIFIER *
-    // ********************************************
-    this.categoryService.getAll()
-    .subscribe((data:any)=>{
-      this.categories = data;
-    })
-
-    this.menuService.getAll()
-    .subscribe((data:any)=>{
-      this.menus = data;
-    })
-
     // Création d'un objet oldProduct pour la sauvegarde des attributs initiaux d'un produit
     // - Fait de telle façon qu'aucune référence n'est copiée afin de ne pas les modifier en même temps que l'on modifie le produit
     this.oldProduct = JSON.parse(JSON.stringify(this.product));
@@ -189,7 +175,7 @@ export class deleteDialog {
   ],
 })
 export class recipeDialog {
-  menus!: Menu[];
+  @Input() menus !: Menu[];
   ingredients!: Ingredient[];
   typesOfIngredient: TypeOfIngredient[] = [];
   product!: Product;
@@ -198,8 +184,8 @@ export class recipeDialog {
     // Récupération des données du produit
     @Inject(MAT_DIALOG_DATA) public data: any,
 
-    private ingredientService: IngredientService,
     private menuService: MenuService,
+    private ingredientService: IngredientService,
     public compareObjectsService: CompareObjectsService
   ) {
     // Enregistrement des attributs envoyés via @Inject sous le nom product
@@ -223,9 +209,10 @@ export class recipeDialog {
 
     // Obtention de tous les menus possibles
     this.menuService.getAll()
-    .subscribe((data: Menu[]) => {
+    .pipe(take(1))
+    .subscribe((data:Menu[])=>{
       this.menus = data;
-    });
+    })
   }
 
   // Vérification de la présence d'un ingrédient dans le produit
