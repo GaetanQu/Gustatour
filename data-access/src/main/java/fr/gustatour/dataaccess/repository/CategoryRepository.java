@@ -7,4 +7,5 @@ import fr.gustatour.dataaccess.model.Category;
 
 @Repository
 public interface CategoryRepository extends CrudRepository<Category, Integer>{
+    Iterable<Category> findByAvailableTrueOrderByDisplayOrderAsc();
 }

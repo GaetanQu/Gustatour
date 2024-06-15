@@ -1,0 +1,16 @@
+@import '../../styles/vars.scss';
+
+header {
+    width: calc(100% - 1rem);
+    background-color: $primary;
+    color: $background;
+
+    display: flex;
+    justify-content: space-between;
+    padding: .5rem;
+    padding-top: 1em;
+
+    a {
+        color: $background;
+    }
+}

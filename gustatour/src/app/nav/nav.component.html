@@ -1,0 +1,13 @@
+<nav>
+    <app-header></app-header>
+    <ul>
+        <li>
+            <img src="../../assets/images/Logo.png" alt="Logo">
+        </li>
+        @for (category of categories; track category.name) {
+            <li [routerLink]="['/' + category.name]" routerLinkActive="router-link-active" >
+                <h5>{{ category.name }}</h5>
+            </li>
+        }
+    </ul>
+</nav>

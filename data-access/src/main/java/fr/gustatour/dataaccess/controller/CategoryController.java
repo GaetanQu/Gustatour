@@ -20,4 +20,10 @@ public class CategoryController {
     public Iterable<Category> getAllCategories(){
         return categoryService.getCategories();
     }
+
+    //Retourne uniquement les catégories triées pas ordre d'affichage
+    @GetMapping("/filteredAndSorted")
+    public Iterable<Category> getFilteredAndSortedCategories(){
+        return categoryService.getFileteredAndSortedCategories();
+    }
 }

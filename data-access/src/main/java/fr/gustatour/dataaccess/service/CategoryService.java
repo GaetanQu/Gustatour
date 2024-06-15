@@ -16,4 +16,9 @@ public class CategoryService {
     public Iterable<Category> getCategories(){
         return categoryRepository.findAll();
     }
+
+    //Filtre et trie les catégories disponibles
+    public Iterable<Category> getFileteredAndSortedCategories(){
+        return categoryRepository.findByAvailableTrueOrderByDisplayOrderAsc();
+    }
 }

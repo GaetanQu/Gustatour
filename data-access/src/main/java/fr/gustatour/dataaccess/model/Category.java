@@ -20,7 +20,7 @@ public class Category {
     private String name;
 
     @Column(name = "display_order")
-    private Integer display_order;
+    private Integer displayOrder;
 
     @Column(name = "available")
     private boolean available;
@@ -43,11 +43,11 @@ public class Category {
     }
 
     public Integer getDisplay_order() {
-        return this.display_order;
+        return this.displayOrder;
     }
 
     public void setDisplay_order(Integer display_order) {
-        this.display_order = display_order;
+        this.displayOrder = display_order;
     }
 
     public boolean isAvailable() {

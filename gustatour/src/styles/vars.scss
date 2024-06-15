@@ -1,0 +1,21 @@
+// Couleurs et gradients générés via RealTime Colors
+// https://www.realtimecolors.com/?colors=040407-f5f6fa-26282E-8fa2d9-718ad7&fonts=Varela%20Round-League%20Spartan
+
+// Couleurs
+$text: #040407;
+$background: #f5f6fa;
+$primary: #26282E;
+$secondary: #8fa2d9;
+$accent: #718ad7;
+
+
+// Gradients
+:root {
+    --linearPrimarySecondary: linear-gradient(#26282E, #8fa2d9);
+    --linearPrimaryAccent: linear-gradient(#26282E, #718ad7);
+    --linearSecondaryAccent: linear-gradient(#8fa2d9, #718ad7);
+    --radialPrimarySecondary: radial-gradient(#26282E, #8fa2d9);
+    --radialPrimaryAccent: radial-gradient(#26282E, #718ad7);
+    --radialSecondaryAccent: radial-gradient(#8fa2d9, #718ad7);
+
+}
