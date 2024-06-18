@@ -15,6 +15,7 @@
         <app-product
         [product]="product"
         [categories]="categories"
+        (deleteProduct)="openDeleteDialog($event)"
         ></app-product>
     }
 </main>

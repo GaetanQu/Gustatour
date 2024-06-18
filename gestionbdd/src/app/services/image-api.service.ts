@@ -18,6 +18,6 @@ export class ImageApiService {
 
     formData.append("image", image);
 
-    return this.http.post('/image/upload', formData, { params: {key: this.apiKey, name: name}}).pipe(take(1)).subscribe();
+    return this.http.post('https://api.imgbb.com/1/upload', formData, { params: {key: this.apiKey, name: name}}).pipe(take(1)).subscribe();
   }
 }

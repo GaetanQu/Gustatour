@@ -1,5 +1,5 @@
 // Imports pour Angular
-import { Component, ElementRef, Inject, Input, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Inject, Input, Output } from '@angular/core';
 
 // Imports de composants Angular
 import { FormsModule } from '@angular/forms';
@@ -56,11 +56,14 @@ export class ProductComponent {
   @Input() product!: Product;
   @Input() categories!: Category[];
 
+  @Output() deleteProduct: EventEmitter<Product> = new EventEmitter<Product>();
+
   oldProduct !: Product;
 
   constructor(
     public matDialog: MatDialog,
-    private productService: ProductService
+    private productService: ProductService,
+    public compareObjectsService: CompareObjectsService,
   ){}
 
   // Initialisation des données lors du chargement du composant
@@ -70,16 +73,11 @@ export class ProductComponent {
     this.oldProduct = JSON.parse(JSON.stringify(this.product));
   }
 
-  // Comparaison des objets par ID
-  public compareObjects(c1: any, c2: any): boolean {
-    return c1 && c2 ? c1.id === c2.id : c1 === c2;
-  }
-
   // Vérification des mises à jour sur le produit
   public checkUpdates(): boolean {
     return (this.product.name != this.oldProduct.name)
     || (this.product.available != this.oldProduct.available)
-    || (!this.compareObjects(this.product.category, this.oldProduct.category))
+    || (!this.compareObjectsService.compareCategories(this.product.category, this.oldProduct.category))
     || (this.product.menu && this.oldProduct.menu && this.product.menu.id != this.oldProduct.menu.id)
     || (this.product.price != this.oldProduct.price)
     || (!this.ingredientComparison(this.product.ingredients, this.oldProduct.ingredients));
@@ -103,20 +101,6 @@ export class ProductComponent {
     }
   
     return true;
-  }
-
-  // Ouverture de la boîte de dialogue de suppression d'un produit
-  public openDeleteDialog() {
-    const dialogRef = this.matDialog.open(deleteDialog);
-
-    // Test du retour de la boîte de dialogue
-    // - Suppression du produit en cas de résultat positif
-    dialogRef.afterClosed().subscribe(result => {
-      if(result){
-        this.productService.delete(this.product)
-        .subscribe();
-      }
-    });
   }
 
   // Ouverture de la boîte de dialogue de modification de la recette d'un produit
@@ -146,23 +130,11 @@ export class ProductComponent {
   public updateProduct(){
     this.productService.update(this.product);
     this.oldProduct = JSON.parse(JSON.stringify(this.product));
-    
   }
-}
 
-/********************************************************************
- * Boîte de dialogue pour la confirmation de suppression du produit *
- ********************************************************************/
-@Component({
-  selector: 'delete-dialog',
-  templateUrl: 'delete-dialog.html',
-  standalone: true,
-  imports: [
-    MatDialogModule,
-    MatButtonModule,
-  ],
-})
-export class deleteDialog {
+  public onDeleteProduct(): void {
+    this.deleteProduct.emit(this.product);
+  }
 }
 
 /*********************************************************************

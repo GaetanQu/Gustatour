@@ -28,7 +28,7 @@
         <!-- Champ de formulaire pour la catégorie du produit -->
         <mat-form-field>
             <mat-label>Catégorie</mat-label>
-            <mat-select [(ngModel)]="product.category" [compareWith]="compareObjects">
+            <mat-select [(ngModel)]="product.category" [compareWith]="compareObjectsService.compareCategories">
                 <!-- Boucle pour afficher les options de catégorie -->
                 @for (category of categories; track $index) {
                     <mat-option [value]="category">
@@ -50,7 +50,7 @@
         <mat-slide-toggle [(ngModel)]="product.available" color="accent" labelPosition="before">Disponible : </mat-slide-toggle>
         
         <!-- Bouton pour ouvrir le dialogue de suppression -->
-        <button mat-icon-button color="warn" (click)="openDeleteDialog()"><mat-icon>delete</mat-icon></button>
+        <button mat-icon-button color="warn" (click)="onDeleteProduct()"><mat-icon>delete</mat-icon></button>
     </div>
     
     <!-- Bouton pour enregistrer les modifications du produit -->

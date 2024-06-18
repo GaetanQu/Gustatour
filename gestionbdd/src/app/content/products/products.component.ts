@@ -1,5 +1,5 @@
 //Imports pour Angular
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 
 //Imports de components Angular Material
 import { MatListModule } from '@angular/material/list';
@@ -7,7 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatStepperModule } from '@angular/material/stepper';
 
@@ -50,14 +50,13 @@ export class ProductsComponent {
   products!: Product[];
   filteredProducts!: Product[];
   categories!: Category[];
-  menus!: Menu[];
   searchTerm!: string;
 
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
-    private menuService: MenuService,
     public dialog: MatDialog,
+    public matDialog: MatDialog,
   ){ }
 
   ngOnInit(){
@@ -80,7 +79,7 @@ export class ProductsComponent {
     const dialogRef = this.dialog.open(AddProductDialog);
 
     dialogRef.afterClosed().subscribe(result => {
-      // Si result existe, alors il est sous la forme [string, object]
+      // Si result existe, alors il est sous la forme [string (retour du dialogue), object (Product)]
       if(result[0] && result[0] === "save") {
         // Définition de certaines valeurs par défaut pour le produit
         result[1].available = true;
@@ -88,16 +87,53 @@ export class ProductsComponent {
 
         // Ajout du produit en bdd
         this.productService.add(result[1])
-        .subscribe(() =>{
+        .pipe(
+          take(1)
+        )
+        .subscribe();
+      }
 
-          // Mise à jour de la liste de produits          
-          this.productService.getAll()
-          .subscribe((data: Product[]) =>{
-            this.filteredProducts = [...data]
-            this.products = [...data]
+      // Mise à jour de la liste de produits (nécessaire de passer par l'api pour récupérer l'id du produit en bdd)
+      this.productService.getAll()
+      .pipe(
+        take(1)
+      )
+      .subscribe(
+        (data: Product[]) => {
+          this.products = data;
+          
+          //Mise à jour de la liste de produits filtrés
+          this.filterProductsByName();
+        }
+      )
+    });
+  }
+
+  // Ouverture de la boîte de dialogue de suppression d'un produit
+  public openDeleteDialog(deletedProduct: Product) {
+    const dialogRef = this.matDialog.open(deleteDialog, {
+      // Transfert du nom du produit dans la boîte de dialogue de suppression
+      data: { productName: String }
+    });
+
+    // Test du retour de la boîte de dialogue
+    // - Suppression du produit en cas de résultat positif
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        // Suppression du produit en bdd
+        this.productService.delete(deletedProduct)
+        .pipe(
+          take(1)
+        )
+        .subscribe(
+          () => {
+            // Suppression du produit de la liste de produits
+            this.products = this.products.filter(product => product.id !== deletedProduct.id);
+
+            //Mise à jour de la liste de produits filtrés
             this.filterProductsByName();
-          });
-        });
+          }
+        );
       }
     });
   }
@@ -117,6 +153,9 @@ export class ProductsComponent {
   }
 }
 
+/**********************************************
+* Boite de dialogue pour l'ajout d'un produit *
+**********************************************/
 @Component({
   selector: 'add-product-dialog',
   standalone: true,
@@ -186,5 +225,28 @@ export class AddProductDialog {
     } else {
       this.newProduct.ingredients.splice(this.newProduct.ingredients.indexOf(ingredient), 1);
     }
+  }
+}
+
+/********************************************************************
+ * Boîte de dialogue pour la confirmation de suppression du produit *
+ *******************************************************************/
+@Component({
+  selector: 'delete-dialog',
+  templateUrl: 'delete-dialog.html',
+  standalone: true,
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+  ],
+})
+export class deleteDialog {
+  name!: string;
+
+  constructor(
+    // Récupération du nom du produit
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ){
+    this.name = data.name;
   }
 }
