@@ -6,7 +6,7 @@ import { take } from 'rxjs';
   providedIn: 'root'
 })
 export class ImageApiService {
-  private readonly apiKey: string = "4913b636a19f2e96105dcc5b98888b03";
+  private readonly apiKey: string = "";
   apiUrl: string = "https://api.imgbb.com/1/upload"
 
   constructor(

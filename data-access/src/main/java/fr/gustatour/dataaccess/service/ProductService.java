@@ -1,5 +1,7 @@
 package fr.gustatour.dataaccess.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +9,11 @@ import org.springframework.stereotype.Service;
 
 import fr.gustatour.dataaccess.model.Ingredient;
 import fr.gustatour.dataaccess.model.Product;
+import fr.gustatour.dataaccess.repository.IngredientRepository;
+import fr.gustatour.dataaccess.repository.MenuRepository;
 import fr.gustatour.dataaccess.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProductService {
@@ -16,13 +21,38 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+    @Autowired 
+    private MenuRepository menuRepository;
+
+    @Autowired
+    private IngredientRepository ingredientRepository;
+
+
     //Retourne tous les produits
     public Iterable<Product> getProducts() {
         return productRepository.findAll();
     }
 
     //Crée un produit
+    @Transactional
     public Product saveProduct(Product product) {
+        // Assurez-vous que le menu existe dans la base de données
+        if (product.getMenu() != null && product.getMenu().getId() != 0) {
+            product.setMenu(menuRepository.findById(product.getMenu().getId()).orElse(null));
+        }
+
+        // Assurez-vous que les ingrédients existent dans la base de données
+        List<Ingredient> ingredients = new ArrayList<>();
+        for (Ingredient ingredient : product.getIngredients()) {
+            if (ingredient.getId() != 0) {
+                ingredient = ingredientRepository.findById(ingredient.getId()).orElse(null);
+                if (ingredient != null) {
+                    ingredients.add(ingredient);
+                }
+            }
+        }
+        product.setIngredients(ingredients);
+
         return productRepository.save(product);
     }
 

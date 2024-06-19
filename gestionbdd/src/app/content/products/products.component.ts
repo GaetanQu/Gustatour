@@ -85,27 +85,31 @@ export class ProductsComponent {
         result[1].available = true;
         result[1].image_name = "";
 
+        console.log(this.products[0]);
+
         // Ajout du produit en bdd
         this.productService.add(result[1])
         .pipe(
           take(1)
         )
-        .subscribe();
+        .subscribe(
+          ()=>{
+            // Mise à jour de la liste de produits (nécessaire de passer par l'api pour récupérer l'id du produit en bdd)
+            this.productService.getAll()
+            .pipe(
+              take(1)
+            )
+            .subscribe(
+              (data: Product[]) => {
+                this.products = data;
+                
+                //Mise à jour de la liste de produits filtrés
+                this.filterProductsByName();
+              }
+            )
+          }
+        );
       }
-
-      // Mise à jour de la liste de produits (nécessaire de passer par l'api pour récupérer l'id du produit en bdd)
-      this.productService.getAll()
-      .pipe(
-        take(1)
-      )
-      .subscribe(
-        (data: Product[]) => {
-          this.products = data;
-          
-          //Mise à jour de la liste de produits filtrés
-          this.filterProductsByName();
-        }
-      )
     });
   }
 
