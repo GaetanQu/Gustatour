@@ -4,7 +4,7 @@ import { Component, Inject } from '@angular/core';
 //Imports de components Angular Material
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -37,7 +37,7 @@ import { take } from 'rxjs';
     ProductComponent,
     MatListModule,
     MatButtonModule,
-    MatIcon,
+    MatIconModule,
     MatFormFieldModule,
     MatInputModule,
     MatDialogModule,
@@ -115,7 +115,7 @@ export class ProductsComponent {
 
   // Ouverture de la boîte de dialogue de suppression d'un produit
   public openDeleteDialog(deletedProduct: Product) {
-    const dialogRef = this.matDialog.open(deleteDialog, {
+    const dialogRef = this.matDialog.open(DeleteProductDialog, {
       // Transfert du nom du produit dans la boîte de dialogue de suppression
       data: { productName: String }
     });
@@ -236,15 +236,15 @@ export class AddProductDialog {
  * Boîte de dialogue pour la confirmation de suppression du produit *
  *******************************************************************/
 @Component({
-  selector: 'delete-dialog',
-  templateUrl: 'delete-dialog.html',
+  templateUrl: 'delete-product-dialog.html',
   standalone: true,
   imports: [
     MatDialogModule,
     MatButtonModule,
+    MatIconModule,
   ],
 })
-export class deleteDialog {
+export class DeleteProductDialog {
   name!: string;
 
   constructor(

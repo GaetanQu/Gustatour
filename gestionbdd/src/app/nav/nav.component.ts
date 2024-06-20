@@ -1,6 +1,6 @@
 //Imports pour Angular
 import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 //Imports de components Angular Material
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +21,8 @@ import { AppComponent } from '../app.component';
     MatListModule,
     MatFormFieldModule,
     MatInputModule,
-    RouterLink
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.scss'

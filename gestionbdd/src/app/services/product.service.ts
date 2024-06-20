@@ -27,6 +27,6 @@ export class ProductService {
 
   //Supprime un produit de la bdd
   public delete(product: Product) {
-    return this.bddApiService.putSend("product/delete/" + String(product.id), product);
+    return this.bddApiService.postSend("product/delete/" + String(product.id), product);
   }
 }
