@@ -18,12 +18,12 @@ public class IngredientService {
     @Autowired
     private ProductService productService;
 
-    //Retourne tous les ingrédients
+    // Retourne tous les ingrédients
     public Iterable<Ingredient> getIngredients(){
         return ingredientRepository.findAll();
     }
 
-    //Met à jour un ingrédient
+    // Met à jour un ingrédient
     public void updateIngredient(int ingredientId, Ingredient updatedIngredient) {
         Optional<Ingredient> optionalIngredient = ingredientRepository.findById(ingredientId);
 
@@ -50,5 +50,10 @@ public class IngredientService {
 
             ingredientRepository.save(originalIngredient);
         }
+    }
+
+    // Supprime un ingrédient
+    public void deleteIngredient(int ingredientId, Ingredient deletedIngredient) {
+        ingredientRepository.delete(deletedIngredient);
     }
 }

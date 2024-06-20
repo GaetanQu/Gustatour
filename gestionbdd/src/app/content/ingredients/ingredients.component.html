@@ -102,6 +102,15 @@
             }
         </td>
     </ng-container>
+
+    <!-- Colonne de suppression -->
+    <ng-container matColumnDef="delete">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let ingredient">
+            <!-- Affichage du bouton de suppression -->
+            <button mat-button (click)="deleteIngredient(ingredient)"><mat-icon color="warn">delete</mat-icon></button> 
+        </td>
+    </ng-container>
     
     <!-- Définition des lignes du tableau -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>

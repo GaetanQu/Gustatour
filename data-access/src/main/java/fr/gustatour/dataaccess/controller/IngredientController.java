@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,17 +21,23 @@ public class IngredientController {
     @Autowired
     private IngredientService ingredientService;
 
-    //Retourne tous les ingrédients
+    // Retourne tous les ingrédients
     @GetMapping("/all")
     public Iterable<Ingredient> getAllIngredients(){
         return ingredientService.getIngredients();
     }
 
-    //Met à jour un ingrédient
+    // Met à jour un ingrédient
     @PutMapping("/update/{ingredientId}")
     public ResponseEntity<Void> updateIngredient(@PathVariable int ingredientId, @RequestBody Ingredient updatedIngredient) {
         ingredientService.updateIngredient(ingredientId, updatedIngredient);
         return ResponseEntity.noContent().build();
     }
-    
+
+    // Supprime un ingrédient
+    @PostMapping("/delete/{ingredientId}")
+    public ResponseEntity<Void> deleteIngredient(@PathVariable int ingredientId, @RequestBody Ingredient deletedIngredient) {
+        ingredientService.deleteIngredient(ingredientId, deletedIngredient);
+        return ResponseEntity.noContent().build();
+    }
 }

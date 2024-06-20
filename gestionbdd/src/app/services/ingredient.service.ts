@@ -17,4 +17,8 @@ export class IngredientService {
   public update(ingredient: Ingredient) {
     return this.bddApiService.putSend("ingredient/update/" + String(ingredient.id), ingredient).subscribe();
   }
+
+  public delete(ingredient: Ingredient) {
+    return this.bddApiService.postSend("ingredient/delete/" + ingredient.id, ingredient)
+  }
 }

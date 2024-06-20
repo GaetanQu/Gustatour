@@ -11,7 +11,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
+import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -25,6 +25,7 @@ import { Allergene } from '../../models/allergene.model';
 import { IngredientService } from '../../services/ingredient.service';
 import { AllergenesService } from '../../services/allergenes.service';
 import { CompareObjectsService } from '../../services/compare-objects.service';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 
 @Component({
@@ -37,10 +38,11 @@ import { CompareObjectsService } from '../../services/compare-objects.service';
     MatSortModule,
     MatChipsModule,
     MatFormFieldModule,
-    MatIcon,
+    MatIconModule,
     MatButtonModule,
     MatInputModule,
     MatSelectModule,
+    MatDialogModule,
   ],
   templateUrl: './ingredients.component.html',
   styleUrl: './ingredients.component.scss'
@@ -52,7 +54,7 @@ export class IngredientsComponent {
   searchFilter: string = '';
 
   // Ordre d'affichages des collonnes du tableau
-  displayedColumns: string[] = ['edit', 'name', 'type', "allergenes", 'available'];
+  displayedColumns: string[] = ['edit', 'name', 'type', "allergenes", 'available', 'delete'];
 
   // Création du tableau Material contenant les ingrédients
   ingredientSource: MatTableDataSource<Ingredient> = new MatTableDataSource<Ingredient>();
@@ -63,6 +65,7 @@ export class IngredientsComponent {
     private ingredientService: IngredientService,
     private allergeneService: AllergenesService,
     public compareObjectsService: CompareObjectsService,
+    public matDialog: MatDialog,
   ){ }
 
   ngOnInit() {
@@ -136,4 +139,34 @@ export class IngredientsComponent {
   selectAllergene(ingredient: Ingredient, allergene: Allergene) {
     return ingredient.allergenes.some(ingredientAllergene => ingredientAllergene.id === allergene.id && ingredientAllergene.name === allergene.name);
   }
+
+  // Suppression d'un ingrédient
+  public deleteIngredient(deletedIngredient: Ingredient) {
+    const dialogRef = this.matDialog.open(DeleteIngredientDialog);
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(result) {
+        this.ingredientService.delete(deletedIngredient)
+        .pipe(
+          take(1)
+        )
+        .subscribe();
+      }
+    })
+  }
+}
+
+@Component({
+  standalone: true,
+  imports: [
+    MatDialogModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
+  templateUrl: "deleteIngredientDialog.html",
+  styleUrl: "ingredients.component.scss"
+})
+
+export class DeleteIngredientDialog {
+  constructor(){}
 }
