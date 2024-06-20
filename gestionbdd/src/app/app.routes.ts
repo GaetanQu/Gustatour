@@ -5,7 +5,7 @@ import { CategoriesComponent } from './content/categories/categories.component';
 import { MenusComponent } from './content/menus/menus.component';
 
 export const routes: Routes = [
-    {path: '', redirectTo: '/product', pathMatch:"full"},
+    {path: '', redirectTo: '/products', pathMatch:"full"},
     {path: 'products', component: ProductsComponent},
     {path: 'ingredients', component: IngredientsComponent},
     {path: 'categories', component: CategoriesComponent},

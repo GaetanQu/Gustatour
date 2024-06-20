@@ -84,7 +84,7 @@ export class IngredientsComponent {
           }
         });
 
-        // Définition du filtre de la table
+        // Définition du prédicat de filtre de la table
         this.ingredientSource.filterPredicate = (data: Ingredient, filter: string) => {
           const [typeOfIngredientFilter, searchFilter] = filter.split('$');
 
@@ -120,6 +120,7 @@ export class IngredientsComponent {
 
   // Filtrage des ingrédients selon leur type et leur nom
   filterIngredient(typeOfIngredientFilter: string, searchFilter: string): void {
+    // Concatène les filtres de type et de recherche séparés par un "$"
     const filterValue = `${typeOfIngredientFilter.trim().toLowerCase()}$${searchFilter.trim().toLowerCase()}`;
     this.ingredientSource.filter = filterValue;
   }
@@ -150,7 +151,15 @@ export class IngredientsComponent {
         .pipe(
           take(1)
         )
-        .subscribe();
+        .subscribe(
+          () => {
+            const updatedIngredientSourceData = this.ingredientSource.data;
+            updatedIngredientSourceData.splice(this.ingredientSource.data.findIndex(ingredient => ingredient.id === deletedIngredient.id), 1);
+
+            this.ingredientSource.data = [... updatedIngredientSourceData];
+            
+          }
+        );
       }
     })
   }
