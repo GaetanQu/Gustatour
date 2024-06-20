@@ -37,7 +37,7 @@ public class ProductController {
     }
 
     //Supprime un produit
-    @PutMapping("/delete/{productId}")
+    @PostMapping("/delete/{productId}")
     public ResponseEntity<Product> deleteProduct(@PathVariable int productId, @RequestBody Product deletedProduct) {
         productService.deleteProduct(productId, deletedProduct);
         return ResponseEntity.ok(deletedProduct);

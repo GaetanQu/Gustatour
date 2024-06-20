@@ -35,15 +35,16 @@ public class ProductService {
 
     //Crée un produit
     @Transactional
-    public Product saveProduct(Product product) {
-        // Assurez-vous que le menu existe dans la base de données
-        if (product.getMenu() != null && product.getMenu().getId() != 0) {
-            product.setMenu(menuRepository.findById(product.getMenu().getId()).orElse(null));
+    public Product saveProduct(Product addedProduct) {
+        // Vérification de l'existence du produit en base de données
+        if (addedProduct.getMenu() != null && addedProduct.getMenu().getId() != 0) {
+            // On set le menu en fonction
+            addedProduct.setMenu(menuRepository.findById(addedProduct.getMenu().getId()).orElse(null));
         }
 
-        // Assurez-vous que les ingrédients existent dans la base de données
+        // Vérification de l'existence des ingrédients en base de données
         List<Ingredient> ingredients = new ArrayList<>();
-        for (Ingredient ingredient : product.getIngredients()) {
+        for (Ingredient ingredient : addedProduct.getIngredients()) {
             if (ingredient.getId() != 0) {
                 ingredient = ingredientRepository.findById(ingredient.getId()).orElse(null);
                 if (ingredient != null) {
@@ -51,9 +52,10 @@ public class ProductService {
                 }
             }
         }
-        product.setIngredients(ingredients);
+        // On set l'ingrédient en fonction
+        addedProduct.setIngredients(ingredients);
 
-        return productRepository.save(product);
+        return productRepository.save(addedProduct);
     }
 
     //Met à jout un produit
